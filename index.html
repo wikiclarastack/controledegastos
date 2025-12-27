@@ -3,134 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle</title>
+    <title>ControlPrice | Silva & Gabriel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #10b981;
-            --dark: #1f2937;
-            --light: #f3f4f6;
+            --primary: #4f46e5;
+            --success: #10b981;
+            --text-main: #1f2937;
+            --text-sub: #6b7280;
+            --bg: #f9fafb;
             --white: #ffffff;
         }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; padding: 0; }
-        
-        /* Login */
-        #login-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--dark); z-index: 1000; display: flex; align-items: center; justify-content: center;
-        }
-        .login-box { background: white; padding: 30px; border-radius: 12px; text-align: center; width: 90%; max-width: 350px; }
 
-        /* Nav */
-        nav { background: var(--dark); color: white; padding: 1rem; display: flex; justify-content: space-around; }
-        .nav-btn { cursor: pointer; color: white; text-decoration: none; font-weight: bold; background: none; border: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* --- Header --- */
+        header { background: var(--white); padding: 1rem 10%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); }
+        .logo span { color: var(--success); }
+        nav ul { list-style: none; display: flex; gap: 2rem; align-items: center; }
+        nav a { text-decoration: none; color: var(--text-sub); font-weight: 500; transition: 0.3s; cursor: pointer; }
+        nav a:hover, nav a.active { color: var(--primary); }
+        .btn-login { background: var(--primary); color: white !important; padding: 8px 20px; border-radius: 8px; }
+
+        /* --- Login Overlay --- */
+        #login-screen { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        .login-card { background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; width: 350px; }
+
+        /* --- Main Content --- */
+        main { flex: 1; padding: 3rem 10%; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
+        .section-title { font-size: 2.5rem; margin-bottom: 1rem; }
+        .section-title span { color: var(--success); }
+        .subtitle { color: var(--text-sub); margin-bottom: 2rem; font-size: 1.1rem; }
+
+        /* --- Cards --- */
+        .card { background: var(--white); border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid #f3f4f6; }
+        .balance-label { color: var(--text-sub); font-weight: 600; margin-bottom: 0.5rem; }
+        .balance-value { font-size: 3rem; font-weight: 800; color: var(--success); margin-bottom: 1.5rem; }
         
-        /* Content */
-        .container { max-width: 800px; margin: 20px auto; padding: 20px; }
-        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .pix-tag { background: #f3f4f6; padding: 10px; border-radius: 8px; display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: var(--text-sub); }
+
+        .form-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 1rem; }
+        input { width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--primary); }
+        .btn-add { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .btn-add:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* --- History --- */
+        .history-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+        .history-item:last-child { border-bottom: none; }
+        .history-info strong { display: block; font-size: 0.95rem; }
+        .history-info small { color: var(--text-sub); font-size: 0.8rem; }
+        .history-amt { font-weight: 700; color: var(--success); }
+
+        /* --- Footer --- */
+        footer { padding: 2rem; text-align: center; border-top: 1px solid #e5e7eb; background: white; }
+        .footer-links { display: flex; justify-content: center; gap: 30px; margin-top: 10px; }
+        .footer-links a { text-decoration: none; color: var(--text-main); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .footer-links img { width: 20px; }
+
         .hidden { display: none; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        button.main-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        
-        footer { text-align: center; padding: 20px; font-size: 0.8rem; color: #666; }
-        footer a { color: var(--primary); text-decoration: none; margin: 0 10px; }
+
+        @media (max-width: 900px) {
+            main { grid-template-columns: 1fr; gap: 2rem; padding: 2rem 5%; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="login-overlay">
-        <div class="login-box">
-            <h2>Financeiro 2028</h2>
-            <input type="text" id="user-in" placeholder="Quem está acessando?">
-            <button class="main-btn" onclick="login()">Entrar</button>
+    <div id="login-screen">
+        <div class="login-card">
+            <h2 style="margin-bottom: 20px;">ControlPrice</h2>
+            <input type="text" id="username-in" placeholder="Seu nome">
+            <button class="btn-add" style="width: 100%; mt: 10px;" onclick="doLogin()">Entrar no Projeto</button>
         </div>
     </div>
 
-    <nav>
-        <button class="nav-btn" onclick="tab('home')">Home</button>
-        <button class="nav-btn" onclick="tab('about')">Sobre</button>
-        <button class="nav-btn" onclick="logout()">Sair</button>
-    </nav>
+    <header>
+        <div class="logo">Control<span>Price</span></div>
+        <nav>
+            <ul>
+                <li><a onclick="showTab('home')" id="nav-home" class="active">Home</a></li>
+                <li><a onclick="showTab('hist')" id="nav-hist">Histórico</a></li>
+                <li><a href="https://portfoliosilva.github.io/portfoliosilva/" target="_blank">Experiência</a></li>
+                <li><a onclick="logout()" class="btn-login">Sair</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <div class="container">
-        <h2 id="greet">Bom dia!</h2>
-
-        <div id="tab-home" class="tab">
-            <div class="card">
-                <h3>Saldo Acumulado</h3>
-                <h1 id="bal">R$ 0,00</h1>
-                <p style="font-size: 0.8rem;">PIX: silva777onlycontact@gmail.com</p>
+    <main>
+        <div id="tab-home">
+            <div style="margin-bottom: 2rem;">
+                <span style="background: #e0e7ff; color: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;">Desenvolvedor Silva</span>
+                <h1 class="section-title" id="welcome-msg">Olá, <span>Usuário</span></h1>
+                <p class="subtitle">Vamos juntos alcançar nossa meta até 2028.</p>
             </div>
 
-            <div class="card">
-                <h3>Adicionar Gasto/Aporte</h3>
-                <input type="number" id="val" placeholder="Valor R$">
-                <input type="text" id="desc" placeholder="Descrição">
-                <button class="main-btn" onclick="send()">Lançar no Sistema</button>
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px;">
+                <div class="card">
+                    <p class="balance-label">Saldo Total</p>
+                    <div class="balance-value" id="main-balance">R$ 0,00</div>
+                    <div class="pix-tag">
+                        <i class="fas fa-envelope"></i>
+                        <span>silva777onlycontact@gmail.com</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <p class="balance-label">Novo Aporte</p>
+                    <div class="form-grid">
+                        <input type="number" id="amt" placeholder="Valor (R$)">
+                        <input type="text" id="desc" placeholder="Descrição">
+                        <button class="btn-add" onclick="saveAporte()">Adicionar</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div id="tab-about" class="tab hidden">
+        <div>
+            <h1 class="section-title">Sobre o Projeto 2028</h1>
+            <p class="subtitle">Este sistema monitora cada centavo economizado por Silva e Gabriel para garantir o futuro planejado.</p>
+            
             <div class="card">
-                <h3>Sobre o Projeto</h3>
-                <p>Meta: Máximo de dinheiro até 2028.</p>
-                <p>Usuários: Silva & Gabriel</p>
+                <p class="balance-label">Últimas Movimentações</p>
+                <div id="mini-history">
+                    <p style="text-align: center; color: var(--text-sub); padding: 20px;">Nenhum registro ainda.</p>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <footer>
-        <p>&copy; 2025 Silva & Gabriel</p>
-        <a href="https://portfoliosilva.github.io/portfoliosilva/">Portfolio</a>
-        <a href="https://linktr.ee/silva777only">Linktree</a>
+        <p>&copy; 2025 ControlPrice - Silva & Gabriel</p>
+        <div class="footer-links">
+            <a href="https://portfoliosilva.github.io/portfoliosilva/" target="_blank">
+                <i class="fas fa-user-circle" style="color: #4f46e5;"></i> Meu Silva & Gabriel
+            </a>
+            <a href="https://linktr.ee/silva777only" target="_blank">
+                <img src="https://cdn.simpleicons.org/linktree/10b981" alt="Linktree"> Linktree
+            </a>
+        </div>
     </footer>
 
     <script>
-        const hook = "https://discord.com/api/webhooks/1454574312878243932/t2mqTqD0e-z_ifhATM_XgKkkimvNooM8QR9ZqvdGSTiW271g3e-TslVKITz2mFw9zkAC";
-        let user = localStorage.getItem('user');
+        const WEBHOOK = "https://discord.com/api/webhooks/1454574312878243932/t2mqTqD0e-z_ifhATM_XgKkkimvNooM8QR9ZqvdGSTiW271g3e-TslVKITz2mFw9zkAC";
+        let user = localStorage.getItem('cp_user');
+        let data = JSON.parse(localStorage.getItem('cp_data')) || [];
 
+        // Inicializar
         if(user) {
-            document.getElementById('login-overlay').style.display = 'none';
-            setGreet();
+            document.getElementById('login-screen').classList.add('hidden');
+            render();
         }
 
-        function login() {
-            let n = document.getElementById('user-in').value;
-            if(n) {
-                localStorage.setItem('user', n);
+        function doLogin() {
+            const name = document.getElementById('username-in').value;
+            if(name) {
+                localStorage.setItem('cp_user', name);
                 location.reload();
             }
         }
 
         function logout() {
-            localStorage.removeItem('user');
+            localStorage.removeItem('cp_user');
             location.reload();
         }
 
-        function setGreet() {
-            const h = new Date().getUTCHours() - 3;
-            let g = h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite";
-            document.getElementById('greet').innerText = `${g}, ${user}!`;
+        function render() {
+            // Saudação Brasília
+            const hr = new Date().getUTCHours() - 3;
+            const greet = hr < 12 ? "Bom dia" : hr < 18 ? "Boa tarde" : "Boa noite";
+            document.getElementById('welcome-msg').innerHTML = `${greet}, <span>${user}</span>`;
+
+            // Saldo
+            const total = data.reduce((acc, i) => acc + i.val, 0);
+            document.getElementById('main-balance').innerText = total.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+
+            // Histórico
+            const histDiv = document.getElementById('mini-history');
+            if(data.length > 0) {
+                histDiv.innerHTML = data.slice().reverse().slice(0, 4).map(i => `
+                    <div class="history-item">
+                        <div class="history-info">
+                            <strong>${i.desc}</strong>
+                            <small>${i.date} por ${i.user}</small>
+                        </div>
+                        <div class="history-amt">+ R$ ${i.val.toFixed(2)}</div>
+                    </div>
+                `).join('');
+            }
         }
 
-        function tab(t) {
-            document.querySelectorAll('.tab').forEach(el => el.classList.add('hidden'));
-            document.getElementById('tab-'+t).classList.remove('hidden');
-        }
+        async function saveAporte() {
+            const v = parseFloat(document.getElementById('amt').value);
+            const d = document.getElementById('desc').value || "Aporte sem nome";
 
-        async function send() {
-            const v = document.getElementById('val').value;
-            const d = document.getElementById('desc').value;
-            if(!v) return alert("Bota o valor!");
+            if(!v) return alert("Bota um valor aí!");
 
-            await fetch(hook, {
+            const entry = {
+                val: v,
+                desc: d,
+                user: user,
+                date: new Date().toLocaleDateString('pt-BR')
+            };
+
+            data.push(entry);
+            localStorage.setItem('cp_data', JSON.stringify(data));
+            
+            // Webhook
+            await fetch(WEBHOOK, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({content: `💰 **Novo Registro**\n👤: ${user}\n💵: R$ ${v}\n📝: ${d}`})
+                body: JSON.stringify({
+                    content: `🚀 **ControlPrice Update**\n👤: ${user}\n💰: R$ ${v.toFixed(2)}\n📝: ${d}`
+                })
             });
-            alert("Enviado para o Discord!");
-            document.getElementById('val').value = '';
+
+            document.getElementById('amt').value = '';
             document.getElementById('desc').value = '';
+            render();
+        }
+
+        function showTab(t) {
+            // Exemplo para futuras abas
+            alert("Aba " + t + " clicada! O layout principal já está na Home.");
         }
     </script>
 </body>
