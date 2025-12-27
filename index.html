@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ControlPrice | Dashboard</title>
+    <title>ControlPrice | Finance Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -18,159 +18,212 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+        body { background-color: var(--bg); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; transition: 0.3s; }
 
-        /* --- Telas de Autenticação --- */
+        /* --- Auth --- */
         .auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: flex; align-items: center; justify-content: center; }
-        .auth-card { background: var(--white); padding: 2.5rem; border-radius: 20px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
-        .auth-card h2 { font-size: 1.8rem; margin-bottom: 2rem; font-weight: 800; color: var(--primary); }
-        .auth-card input { width: 100%; padding: 12px; margin-bottom: 1rem; border: 1px solid #e5e7eb; border-radius: 10px; outline: none; }
-        .auth-card button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; }
+        .auth-card { background: var(--white); padding: 2.5rem; border-radius: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        .auth-card input, .form-input { width: 100%; padding: 12px; margin-bottom: 1rem; border: 1px solid #e5e7eb; border-radius: 12px; outline: none; }
+        .btn { width: 100%; padding: 12px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-primary { background: var(--primary); color: white; }
 
         /* --- Header --- */
         header { background: var(--white); padding: 0.8rem 10%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 100; }
         .logo { font-size: 1.4rem; font-weight: 800; cursor: pointer; }
-        .logo span { color: var(--success); }
+        .user-nav { display: flex; align-items: center; gap: 15px; cursor: pointer; position: relative; }
+        .avatar-circle { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
 
-        /* --- User Menu --- */
-        .user-menu-container { position: relative; display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 5px 10px; border-radius: 50px; }
-        .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
-        .dropdown { position: absolute; top: 110%; right: 0; background: white; width: 220px; border-radius: 12px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); border: 1px solid #eee; display: none; overflow: hidden; }
-        .dropdown.active { display: block; }
-        .dropdown-item { padding: 12px 16px; display: flex; align-items: center; gap: 10px; color: var(--text-main); text-decoration: none; font-size: 0.9rem; cursor: pointer; transition: 0.2s; }
-        .dropdown-item:hover { background: #f3f4f6; color: var(--primary); }
-
-        /* --- Main App --- */
+        /* --- Main Layout --- */
         main { padding: 2rem 10%; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; }
-        .view { display: none; animation: fadeIn 0.3s ease; }
+        .view { display: none; animation: fadeIn 0.4s ease; }
         .view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .grid-dashboard { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
+        /* --- Cards & Components --- */
         .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .grid-2 { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
         
-        /* --- Perfil & Config --- */
-        .profile-header { text-align: center; margin-bottom: 2rem; }
-        .profile-avatar-large { width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--primary); margin-bottom: 10px; }
-        .info-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #f3f4f6; }
-        .info-row b { color: var(--text-sub); }
+        /* --- Profile Page --- */
+        .profile-banner { height: 150px; background: var(--primary); border-radius: 20px 20px 0 0; position: relative; cursor: pointer; overflow: hidden; }
+        .profile-banner img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-info-card { text-align: center; margin-top: -50px; }
+        .avatar-large { width: 100px; height: 100px; border-radius: 50%; border: 5px solid white; background: white; margin-bottom: 10px; position: relative; }
 
-        /* --- Buttons --- */
-        .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; transition: 0.3s; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-danger { background: #fee2e2; color: var(--danger); margin-top: 10px; }
+        /* --- Goals --- */
+        .goal-card { border: 1px solid #eee; padding: 15px; border-radius: 15px; margin-top: 15px; display: flex; gap: 15px; align-items: center; }
+        .goal-img { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; }
+        .progress-bar { height: 8px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--success); width: 0%; }
+
+        /* --- Dropdown --- */
+        .dropdown { position: absolute; top: 110%; right: 0; background: white; width: 220px; border-radius: 12px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); border: 1px solid #eee; display: none; }
+        .dropdown.active { display: block; }
+        .dropdown-item { padding: 12px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .dropdown-item:hover { background: #f3f4f6; }
 
         .hidden { display: none; }
-        footer { padding: 2rem; text-align: center; background: white; border-top: 1px solid #eee; margin-top: auto; }
-
-        @media (max-width: 900px) { .grid-dashboard { grid-template-columns: 1fr; } main { padding: 1rem 5%; } }
+        footer { padding: 2rem; text-align: center; background: white; border-top: 1px solid #eee; }
+        
+        @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } main { padding: 1rem 5%; } }
     </style>
 </head>
 <body>
 
     <div id="auth-screen" class="auth-overlay">
-        <div class="auth-card" id="auth-box">
+        <div class="auth-card">
             <h2 id="auth-title">ControlPrice</h2>
-            <div id="auth-inputs">
-                <input type="text" id="in-name" class="reg-only" placeholder="Nome Completo">
-                <input type="text" id="in-user" placeholder="Usuário">
-                <input type="password" id="in-pass" placeholder="Senha">
-                <button class="btn btn-primary" onclick="handleAuth()" id="auth-btn">Cadastrar</button>
+            <div id="reg-fields">
+                <input type="text" id="in-full-name" placeholder="Nome Completo">
             </div>
-            <p style="margin-top:15px; font-size:0.85rem; color:var(--primary); cursor:pointer" onclick="toggleAuthMode()" id="auth-toggle">Já tem conta? Entrar</p>
+            <input type="text" id="in-user" placeholder="Usuário">
+            <input type="password" id="in-pass" placeholder="Senha">
+            <button class="btn btn-primary" onclick="handleAuth()" id="auth-btn">Cadastrar</button>
+            <p style="margin-top:15px; font-size:0.8rem; color:var(--primary); cursor:pointer" onclick="toggleAuth()">Alternar Login/Cadastro</p>
         </div>
     </div>
 
     <header>
         <div class="logo" onclick="showView('home')">Control<span>Price</span></div>
-        <div class="user-menu-container" onclick="toggleDropdown(event)">
-            <span style="font-weight:600" id="nav-username">Usuário</span>
-            <img class="user-avatar" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJgAAACUCAMAAABY3hBoAAAAY1BMVEX///8AAABERET5+fny8vL29va3t7cXFxdVVVXPz8/Y2Njh4eHMzMzu7u7S0tJfX1+Li4sgICCtra1paWlPT0/BwcGjo6OXl5eEhIQSEhIsLCw+Pj4yMjJaWlpxcXE5OTl8fHwMOrCfAAAE40lEQVR4nO1b6baCOAy+yKJSUFYVV97/KWe8zk1SQGlpU8+c0++v0HylaXZ/fjw8PDw8PDw8PDw8PDwsIxZpcqz3TbOviyoV0bf5vJAnxT6QcCuS/Nusoqzuggl0dfbV75Zspli90FThl1iF7fU9rSfOyVeoifozrSfq1D2valK3Rjg4phWelGj9iz52ySu+qPIKgqvD6ylWE/Jv976/7x/jXx7CFa9oLUvuVqcsin9vYBhHWbEa/B44MrfR4HudsuET20J+YuWGWSN9rdOk0LyQLu3KBa8jlXjbvXsslRzokZ9XS+UVH2xBKO0g4eYVlurSEnrk3OaMqPW6nXu4Jbs48fJKiSWY5SWde/dWG63gjpKUvGCFz9ecvATKuau90eMbnA6AiFFU5rjT3coSCPSEleo7eDWvfJ8MhWyUb394c2DL9ktk4M3ccPEKUcN0XkMt40oBUpCg5frQNY3CEEtYKGELrxVMxCAt0ouvcoiT9jy8QhCgacTBXTQ8SpZfFh4JqABT9J+e/wRoJovgMEseR76DIEbTUoIlW29ZiGUQ8mheezAzax57gcQ0T0QwE9vCUSqEiNKLzMRQx5RDixfA95c8OiagHKaZjIG5OPNUpTAD1wz5ILzkysihrqkejT0RQrTEZPlx56XWkaBh5gquMYDVsrAYKWpeGmXkIEGrSIJFGLagH3MRDS3G7ZRcvEikqKEtmPLxlXwyCN/V1V+A6rNF1j80TVLOeDB7uzG2I0gpQvFikrIK1538BdaV1GKrlLzAyYt+sofKyZA6Mm+PJCSV1ctsZyEmvG7MJUVMeuddHylbBAFPxENAS/ifw5iUdg2ZK50/NIl7mrMPNy2hZeSHgxZELrcW3hzRTmpTsFYTAYkksrtPnKfo5XYSe5V/ilkQXA8pOakorYZNQ1bTSnEcCA66pi+qdrdrq6LfDHtvLvo1f2iHsj/B0Tm+kKh1xJ2e4wv5h4kLio3zmZVhO3UaF9e8RDVP6oWDs474E9V5ntEfyoOzeZV2ZBBm4GaUJlIYnRli70DVqvefa/3+p457lCYcGf1fsXWRtG223WZtmxT1JL8Ta6AoxoMozX08XhclfTN6kLH5Jod+v+jbN/F11I7Gkkq2vHLoIVefZ+rCamiDmbzmgNe5mk1GouTqgJnMqzyq2aZDyc1M5qU+4yfu0ouaBe950LQt6LRCv4MUIlnu2uTUTqw1F0/pcZ6tWo2YuqGN9tKCZr56leUZUHvfLPB7EWVmsc+bUbVf5I9jegWsXYCQ+JfHwhlNWl+Zr8YoghzkarHq5mR3lgoZZNIoMGgG0WXs2AwyaWSUipEE/m4jpN2R9cxWIju0EWhgAlkaKm2MKUxjzot8MOOcOrH5yTDe2xub7BAdSG+6lkAPbMEuEktt6jIPsNLFnBdVWNPalOVOEE5Gnc0WwjDMTlAQY5/AzMiiN7KUsaJqGJ1lCEHB2tJkgoCgsTY5Amw2WpvIB/Vfm9xLtK7Wag9YWDO5TagR1mZMMMgwUTKw1Pb+wxNBE8BkLBZ2ZyVOeQFjjOVr4ESuxR4CWqDl1xL1wWKxHrV/+bVEB2Ixs8cZieWLQvxkc+px8XwcAc6JWpxIQ9u/3DaCGSstFhxy8CbLb1T1WL2wpCzwDvHmv0UfjttfHh4eHh4eHh4eHh4e/2f8A+u5L3xKDUsWAAAAAElFTkSuQmCC" alt="Profile">
+        <div class="user-nav" onclick="toggleDropdown(event)">
+            <b id="nav-user">Silva777</b>
+            <img class="avatar-circle" id="nav-avatar" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJgAAACUCAMAAABY3hBoAAAAY1BMVEX///8AAABERET5+fny8vL29va3t7cXFxdVVVXPz8/Y2Njh4eHMzMzu7u7S0tJfX1+Li4sgICCtra1paWlPT0/BwcGjo6OXl5eEhIQSEhIsLCw+Pj4yMjJaWlpxcXE5OTl8fHwMOrCfAAAE40lEQVR4nO1b6baCOAy+yKJSUFYVV97/KWe8zk1SQGlpU8+c0++v0HylaXZ/fjw8PDw8PDw8PDw8PDwsIxZpcqz3TbOviyoV0bf5vJAnxT6QcCuS/Nusoqzuggl0dfbV75Zspli90FThl1iF7fU9rSfOyVeoifozrSfq1D2valK3Rjg4phWelGj9iz52ySu+qPIKgqvD6ylWE/Jv976/7x/jXx7CFa9oLUvuVqcsin9vYBhHWbEa/B44MrfR4HudsuET20J+YuWGWSN9rdOk0LyQLu3KBa8jlXjbvXsslRzokZ9XS+UVH2xBKO0g4eYVlurSEnrk3OaMqPW6nXu4Jbs48fJKiSWY5SWde/dWG63gjpKUvGCFz9ecvATKuau90eMbnA6AiFFU5rjT3coSCPSEleo7eDWvfJ8MhWyUb394c2DL9ktk4M3ccPEKUcN0XkMt40oBUpCg5frQNY3CEEtYKGELrxVMxCAt0ouvcoiT9jy8QhCgacTBXTQ8SpZfFh4JqABT9J+e/wRoJovgMEseR76DIEbTUoIlW29ZiGUQ8mheezAzax57gcQ0T0QwE9vCUSqEiNKLzMRQx5RDixfA95c8OiagHKaZjIG5OPNUpTAD1wz5ILzkysihrqkejT0RQrTEZPlx56XWkaBh5gquMYDVsrAYKWpeGmXkIEGrSIJFGLagH3MRDS3G7ZRcvEikqKEtmPLxlXwyCN/V1V+A6rNF1j80TVLOeDB7uzG2I0gpQvFikrIK1538BdaV1GKrlLzAyYt+sofKyZA6Mm+PJCSV1ctsZyEmvG7MJUVMeuddHylbBAFPxENAS/ifw5iUdg2ZK50/NIl7mrMPNy2hZeSHgxZELrcW3hzRTmpTsFYTAYkksrtPnKfo5XYSe5V/ilkQXA8pOakorYZNQ1bTSnEcCA66pi+qdrdrq6LfDHtvLvo1f2iHsj/B0Tm+kKh1xJ2e4wv5h4kLio3zmZVhO3UaF9e8RDVP6oWDs474E9V5ntEfyoOzeZV2ZBBm4GaUJlIYnRli70DVqvefa/3+p457lCYcGf1fsXWRtG223WZtmxT1JL8Ta6AoxoMozX08XhclfTN6kLH5Jod+v+jbN/F11I7Gkkq2vHLoIVefZ+rCamiDmbzmgNe5mk1GouTqgJnMqzyq2aZDyc1M5qU+4yfu0ouaBe950LQt6LRCv4MUIlnu2uTUTqw1F0/pcZ6tWo2YuqGN9tKCZr56leUZUHvfLPB7EWVmsc+bUbVf5I9jegWsXYCQ+JfHwhlNWl+Zr8YoghzkarHq5mR3lgoZZNIoMGgG0WXs2AwyaWSUipEE/m4jpN2R9cxWIju0EWhgAlkaKm2MKUxjzot8MOOcOrH5yTDe2xub7BAdSG+6lkAPbMEuEktt6jIPsNLFnBdVWNPalOVOEE5Gnc0WwjDMTlAQY5/AzMiiN7KUsaJqGJ1lCEHB2tJkgoCgsTY5Amw2WpvIB/Vfm9xLtK7Wag9YWDO5TagR1mZMMMgwUTKw1Pb+wxNBE8BkLBZ2ZyVOeQFjjOVr4ESuxR4CWqDl1xL1wWKxHrV/+bVEB2Ixs8cZieWLQvxkc+px8XwcAc6JWpxIQ9u/3DaCGSstFhxy8CbLb1T1WL2wpCzwDvHmv0UfjttfHh4eHh4eHh4eHh4e/2f8A+u5L3xKDUsWAAAAAElFTkSuQmCC">
             <div class="dropdown" id="dropdown">
                 <div class="dropdown-item" onclick="showView('profile')"><i class="fas fa-user"></i> Ver Perfil</div>
+                <div class="dropdown-item" onclick="showView('friends')"><i class="fas fa-users"></i> Amigos</div>
                 <div class="dropdown-item" onclick="showView('config')"><i class="fas fa-cog"></i> Configurações</div>
-                <div class="dropdown-item" style="color:var(--danger); border-top:1px solid #eee" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</div>
+                <div class="dropdown-item" style="color:var(--danger)" onclick="logout()"><i class="fas fa-sign-out"></i> Sair</div>
             </div>
         </div>
     </header>
 
     <main>
         <div id="view-home" class="view active">
-            <div class="grid-dashboard">
+            <div class="grid-2">
                 <section>
-                    <h1 id="greet" style="font-size: 2rem; margin-bottom: 20px;">Olá, <span>...</span></h1>
-                    <div class="card" style="background: linear-gradient(135deg, var(--primary), #6366f1); color: white;">
-                        <p style="opacity:0.8">Saldo Total</p>
-                        <h2 id="total-val" style="font-size: 2.5rem; margin: 10px 0;">R$ 0,00</h2>
-                        <p style="font-size:0.8rem"><i class="fas fa-envelope"></i> silva777onlycontact@gmail.com</p>
+                    <h1 id="greet-msg">Olá, <span>Silva</span></h1>
+                    <div class="card" style="background:var(--primary); color:white">
+                        <p>Total Geral em Metas</p>
+                        <h2 id="global-balance" style="font-size: 2.5rem;">R$ 0,00</h2>
                     </div>
                     <div class="card">
-                        <h3><i class="fas fa-plus-circle"></i> Novo Aporte</h3>
-                        <input type="number" id="v-amount" placeholder="Valor R$" style="width:100%; padding:12px; margin:10px 0; border:1px solid #eee; border-radius:8px">
-                        <input type="text" id="v-desc" placeholder="Descrição" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #eee; border-radius:8px">
-                        <button class="btn btn-primary" onclick="addMoney()">Registrar</button>
+                        <h3><i class="fas fa-bullseye"></i> Criar Nova Meta</h3>
+                        <input type="text" id="m-name" class="form-input" placeholder="Nome da Meta (Ex: Carro 2028)">
+                        <input type="number" id="m-target" class="form-input" placeholder="Valor Objetivo (R$)">
+                        <input type="text" id="m-img" class="form-input" placeholder="URL da Imagem">
+                        <button class="btn btn-primary" onclick="createGoal()">Criar Meta</button>
                     </div>
                 </section>
                 <section>
-                    <div class="card">
-                        <h3><i class="fas fa-history"></i> Atividades</h3>
-                        <div id="history-list" style="margin-top:15px"></div>
-                    </div>
+                    <h3>Suas Metas Ativas</h3>
+                    <div id="goals-container"></div>
                 </section>
             </div>
         </div>
 
         <div id="view-profile" class="view">
-            <div class="card" style="max-width: 600px; margin: 0 auto;">
-                <div class="profile-header">
-                    <img class="profile-avatar-large" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJgAAACUCAMAAABY3hBoAAAAY1BMVEX///8AAABERET5+fny8vL29va3t7cXFxdVVVXPz8/Y2Njh4eHMzMzu7u7S0tJfX1+Li4sgICCtra1paWlPT0/BwcGjo6OXl5eEhIQSEhIsLCw+Pj4yMjJaWlpxcXE5OTl8fHwMOrCfAAAE40lEQVR4nO1b6baCOAy+yKJSUFYVV97/KWe8zk1SQGlpU8+c0++v0HylaXZ/fjw8PDw8PDw8PDw8PDwsIxZpcqz3TbOviyoV0bf5vJAnxT6QcCuS/Nusoqzuggl0dfbV75Zspli90FThl1iF7fU9rSfOyVeoifozrSfq1D2valK3Rjg4phWelGj9iz52ySu+qPIKgqvD6ylWE/Jv976/7x/jXx7CFa9oLUvuVqcsin9vYBhHWbEa/B44MrfR4HudsuET20J+YuWGWSN9rdOk0LyQLu3KBa8jlXjbvXsslRzokZ9XS+UVH2xBKO0g4eYVlurSEnrk3OaMqPW6nXu4Jbs48fJKiSWY5SWde/dWG63gjpKUvGCFz9ecvATKuau90eMbnA6AiFFU5rjT3coSCPSEleo7eDWvfJ8MhWyUb394c2DL9ktk4M3ccPEKUcN0XkMt40oBUpCg5frQNY3CEEtYKGELrxVMxCAt0ouvcoiT9jy8QhCgacTBXTQ8SpZfFh4JqABT9J+e/wRoJovgMEseR76DIEbTUoIlW29ZiGUQ8mheezAzax57gcQ0T0QwE9vCUSqEiNKLzMRQx5RDixfA95c8OiagHKaZjIG5OPNUpTAD1wz5ILzkysihrqkejT0RQrTEZPlx56XWkaBh5gquMYDVsrAYKWpeGmXkIEGrSIJFGLagH3MRDS3G7ZRcvEikqKEtmPLxlXwyCN/V1V+A6rNF1j80TVLOeDB7uzG2I0gpQvFikrIK1538BdaV1GKrlLzAyYt+sofKyZA6Mm+PJCSV1ctsZyEmvG7MJUVMeuddHylbBAFPxENAS/ifw5iUdg2ZK50/NIl7mrMPNy2hZeSHgxZELrcW3hzRTmpTsFYTAYkksrtPnKfo5XYSe5V/ilkQXA8pOakorYZNQ1bTSnEcCA66pi+qdrdrq6LfDHtvLvo1f2iHsj/B0Tm+kKh1xJ2e4wv5h4kLio3zmZVhO3UaF9e8RDVP6oWDs474E9V5ntEfyoOzeZV2ZBBm4GaUJlIYnRli70DVqvefa/3+p457lCYcGf1fsXWRtG223WZtmxT1JL8Ta6AoxoMozX08XhclfTN6kLH5Jod+v+jbN/F11I7Gkkq2vHLoIVefZ+rCamiDmbzmgNe5mk1GouTqgJnMqzyq2aZDyc1M5qU+4yfu0ouaBe950LQt6LRCv4MUIlnu2uTUTqw1F0/pcZ6tWo2YuqGN9tKCZr56leUZUHvfLPB7EWVmsc+bUbVf5I9jegWsXYCQ+JfHwhlNWl+Zr8YoghzkarHq5mR3lgoZZNIoMGgG0WXs2AwyaWSUipEE/m4jpN2R9cxWIju0EWhgAlkaKm2MKUxjzot8MOOcOrH5yTDe2xub7BAdSG+6lkAPbMEuEktt6jIPsNLFnBdVWNPalOVOEE5Gnc0WwjDMTlAQY5/AzMiiN7KUsaJqGJ1lCEHB2tJkgoCgsTY5Amw2WpvIB/Vfm9xLtK7Wag9YWDO5TagR1mZMMMgwUTKw1Pb+wxNBE8BkLBZ2ZyVOeQFjjOVr4ESuxR4CWqDl1xL1wWKxHrV/+bVEB2Ixs8cZieWLQvxkc+px8XwcAc6JWpxIQ9u/3DaCGSstFhxy8CbLb1T1WL2wpCzwDvHmv0UfjttfHh4eHh4eHh4eHh4e/2f8A+u5L3xKDUsWAAAAAElFTkSuQmCC">
-                    <h2 id="p-name">Nome do Usuário</h2>
-                    <p id="p-user">@usuario</p>
+            <div class="card profile-info-card">
+                <div class="profile-banner" onclick="changeBanner()">
+                    <img id="p-banner-img" src="https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=800&q=80">
                 </div>
-                <div class="info-row"><b>Status da Conta:</b> <span style="color:var(--success)">Administrador</span></div>
-                <div class="info-row"><b>Membro desde:</b> <span>2025</span></div>
-                <div class="info-row"><b>Objetivo:</b> <span>Juntar dinheiro até 2028</span></div>
-                <button class="btn btn-primary" style="margin-top:20px" onclick="showView('home')">Voltar ao Painel</button>
+                <img class="avatar-large" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJgAAACUCAMAAABY3hBoAAAAY1BMVEX///8AAABERET5+fny8vL29va3t7cXFxdVVVXPz8/Y2Njh4eHMzMzu7u7S0tJfX1+Li4sgICCtra1paWlPT0/BwcGjo6OXl5eEhIQSEhIsLCw+Pj4yMjJaWlpxcXE5OTl8fHwMOrCfAAAE40lEQVR4nO1b6baCOAy+yKJSUFYVV97/KWe8zk1SQGlpU8+c0++v0HylaXZ/fjw8PDw8PDw8PDw8PDwsIxZpcqz3TbOviyoV0bf5vJAnxT6QcCuS/Nusoqzuggl0dfbV75Zspli90FThl1iF7fU9rSfOyVeoifozrSfq1D2valK3Rjg4phWelGj9iz52ySu+qPIKgqvD6ylWE/Jv976/7x/jXx7CFa9oLUvuVqcsin9vYBhHWbEa/B44MrfR4HudsuET20J+YuWGWSN9rdOk0LyQLu3KBa8jlXjbvXsslRzokZ9XS+UVH2xBKO0g4eYVlurSEnrk3OaMqPW6nXu4Jbs48fJKiSWY5SWde/dWG63gjpKUvGCFz9ecvATKuau90eMbnA6AiFFU5rjT3coSCPSEleo7eDWvfJ8MhWyUb394c2DL9ktk4M3ccPEKUcN0XkMt40oBUpCg5frQNY3CEEtYKGELrxVMxCAt0ouvcoiT9jy8QhCgacTBXTQ8SpZfFh4JqABT9J+e/wRoJovgMEseR76DIEbTUoIlW29ZiGUQ8mheezAzax57gcQ0T0QwE9vCUSqEiNKLzMRQx5RDixfA95c8OiagHKaZjIG5OPNUpTAD1wz5ILzkysihrqkejT0RQrTEZPlx56XWkaBh5gquMYDVsrAYKWpeGmXkIEGrSIJFGLagH3MRDS3G7ZRcvEikqKEtmPLxlXwyCN/V1V+A6rNF1j80TVLOeDB7uzG2I0gpQvFikrIK1538BdaV1GKrlLzAyYt+sofKyZA6Mm+PJCSV1ctsZyEmvG7MJUVMeuddHylbBAFPxENAS/ifw5iUdg2ZK50/NIl7mrMPNy2hZeSHgxZELrcW3hzRTmpTsFYTAYkksrtPnKfo5XYSe5V/ilkQXA8pOakorYZNQ1bTSnEcCA66pi+qdrdrq6LfDHtvLvo1f2iHsj/B0Tm+kKh1xJ2e4wv5h4kLio3zmZVhO3UaF9e8RDVP6oWDs474E9V5ntEfyoOzeZV2ZBBm4GaUJlIYnRli70DVqvefa/3+p457lCYcGf1fsXWRtG223WZtmxT1JL8Ta6AoxoMozX08XhclfTN6kLH5Jod+v+jbN/F11I7Gkkq2vHLoIVefZ+rCamiDmbzmgNe5mk1GouTqgJnMqzyq2aZDyc1M5qU+4yfu0ouaBe950LQt6LRCv4MUIlnu2uTUTqw1F0/pcZ6tWo2YuqGN9tKCZr56leUZUHvfLPB7EWVmsc+bUbVf5I9jegWsXYCQ+JfHwhlNWl+Zr8YoghzkarHq5mR3lgoZZNIoMGgG0WXs2AwyaWSUipEE/m4jpN2R9cxWIju0EWhgAlkaKm2MKUxjzot8MOOcOrH5yTDe2xub7BAdSG+6lkAPbMEuEktt6jIPsNLFnBdVWNPalOVOEE5Gnc0WwjDMTlAQY5/AzMiiN7KUsaJqGJ1lCEHB2tJkgoCgsTY5Amw2WpvIB/Vfm9xLtK7Wag9YWDO5TagR1mZMMMgwUTKw1Pb+wxNBE8BkLBZ2ZyVOeQFjjOVr4ESuxR4CWqDl1xL1wWKxHrV/+bVEB2Ixs8cZieWLQvxkc+px8XwcAc6JWpxIQ9u/3DaCGSstFhxy8CbLb1T1WL2wpCzwDvHmv0UfjttfHh4eHh4eHh4eHh4e/2f8A+u5L3xKDUsWAAAAAElFTkSuQmCC">
+                <h2 id="p-full-name">Nome Completo</h2>
+                <p id="p-username">@user</p>
+                <div style="margin:15px 0" id="p-status">Status: Comum</div>
+                <textarea id="p-bio" class="form-input" placeholder="Sua biografia..."></textarea>
+                <button class="btn btn-primary" onclick="saveBio()">Salvar Bio</button>
+            </div>
+        </div>
+
+        <div id="view-friends" class="view">
+            <div class="card">
+                <h3>Adicionar Amigos</h3>
+                <input type="text" id="friend-user" class="form-input" placeholder="Username do amigo">
+                <button class="btn btn-primary" onclick="addFriend()">Pedir Amizade</button>
+                <div id="friends-list" style="margin-top:20px"></div>
             </div>
         </div>
 
         <div id="view-config" class="view">
-            <div class="card" style="max-width: 600px; margin: 0 auto;">
-                <h3><i class="fas fa-tools"></i> Configurações</h3>
-                <div style="margin-top:20px">
-                    <label style="display:block; margin-bottom:10px; font-weight:600">Cor do Tema</label>
-                    <div style="display:flex; gap:10px">
-                        <div onclick="setTheme('#4f46e5')" style="width:30px; height:30px; background:#4f46e5; border-radius:50%; cursor:pointer"></div>
-                        <div onclick="setTheme('#10b981')" style="width:30px; height:30px; background:#10b981; border-radius:50%; cursor:pointer"></div>
-                        <div onclick="setTheme('#f43f5e')" style="width:30px; height:30px; background:#f43f5e; border-radius:50%; cursor:pointer"></div>
-                        <div onclick="setTheme('#111827')" style="width:30px; height:30px; background:#111827; border-radius:50%; cursor:pointer"></div>
-                    </div>
-                </div>
-                <div style="margin-top:30px">
-                    <label style="display:block; margin-bottom:10px; font-weight:600">Segurança</label>
-                    <button class="btn btn-primary" onclick="alert('Funcionalidade de trocar senha em breve!')">Alterar Senha</button>
-                    <button class="btn btn-danger" onclick="clearData()">Limpar Todo Histórico</button>
-                </div>
+            <div class="card">
+                <h3>Customização</h3>
+                <p>Mudar Cor Principal:</p>
+                <input type="color" id="color-picker" onchange="changeColor(this.value)">
+                <button class="btn btn-primary" style="margin-top:20px" onclick="clearAll()">Resetar Tudo</button>
             </div>
         </div>
     </main>
 
     <footer>
-        <p>&copy; 2025 ControlPrice</p>
-        <div style="margin-top:10px">
-            <a href="https://portfoliosilva.github.io/portfoliosilva/" style="color:var(--primary); text-decoration:none; margin:0 10px">Portfólio</a>
-            <a href="https://linktr.ee/silva777only" style="color:var(--primary); text-decoration:none; margin:0 10px">Linktree</a>
+        <p>&copy; 2025 ControlPrice Enterprise</p>
+        <div style="margin-top:15px">
+            <a href="https://portfoliosilva.github.io/portfoliosilva/">Portfolio</a> | 
+            <a href="https://linktr.ee/silva777only">Linktree</a> | 
+            <a href="https://wikiclarastack.github.io/wikiclarastack/">Wiki Clara Stack</a>
         </div>
     </footer>
 
     <script>
-        const HOOK = "https://discord.com/api/webhooks/1454574312878243932/t2mqTqD0e-z_ifhATM_XgKkkimvNooM8QR9ZqvdGSTiW271g3e-TslVKITz2mFw9zkAC";
-        let mode = 'reg'; 
+        const WEBHOOK = "https://discord.com/api/webhooks/1454574312878243932/t2mqTqD0e-z_ifhATM_XgKkkimvNooM8QR9ZqvdGSTiW271g3e-TslVKITz2mFw9zkAC";
+        let currentUser = null;
+        let authMode = 'reg';
 
-        // --- SISTEMA DE NAVEGAÇÃO ---
-        function showView(viewName) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById('view-' + viewName).classList.add('active');
+        // --- AUTH SYSTEM ---
+        function toggleAuth() {
+            authMode = authMode === 'reg' ? 'log' : 'reg';
+            document.getElementById('reg-fields').style.display = authMode === 'reg' ? 'block' : 'none';
+            document.getElementById('auth-btn').innerText = authMode === 'reg' ? 'Cadastrar' : 'Entrar';
+        }
+
+        function handleAuth() {
+            const name = document.getElementById('in-full-name').value;
+            const user = document.getElementById('in-user').value;
+            const pass = document.getElementById('in-pass').value;
+
+            let users = JSON.parse(localStorage.getItem('cp_users')) || [];
+
+            if(authMode === 'reg') {
+                if(users.find(u => u.user === user)) return alert("Este usuário já existe!");
+                const newUser = { name, user, pass, bio: '', banner: '', color: '#4f46e5', goals: [], friends: [] };
+                users.push(newUser);
+                localStorage.setItem('cp_users', JSON.stringify(users));
+                alert("Cadastrado! Faça login.");
+                toggleAuth();
+            } else {
+                const found = users.find(u => u.user === user && u.pass === pass);
+                if(found) {
+                    currentUser = found;
+                    localStorage.setItem('cp_session', user);
+                    init();
+                } else alert("Erro nos dados!");
+            }
+        }
+
+        // --- APP ENGINE ---
+        function init() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('nav-user').innerText = currentUser.user;
+            document.getElementById('greet-msg').innerHTML = `Olá, <span>${currentUser.name.split(' ')[0]}</span>`;
+            document.getElementById('p-full-name').innerText = currentUser.name;
+            document.getElementById('p-username').innerText = '@' + currentUser.user;
+            document.getElementById('p-bio').value = currentUser.bio;
+            document.getElementById('p-banner-img').src = currentUser.banner || document.getElementById('p-banner-img').src;
+            
+            // Admin Check
+            const statusEl = document.getElementById('p-status');
+            if(currentUser.user.toLowerCase() === 'silva777') {
+                statusEl.innerHTML = 'Status: <b style="color:var(--primary)">Administrador</b>';
+            } else {
+                statusEl.innerText = 'Status: Comum';
+            }
+
+            changeColor(currentUser.color, false);
+            renderGoals();
+            renderFriends();
+        }
+
+        function showView(v) {
+            document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
+            document.getElementById('view-' + v).classList.add('active');
             document.getElementById('dropdown').classList.remove('active');
         }
 
@@ -179,108 +232,98 @@
             document.getElementById('dropdown').classList.toggle('active');
         }
 
-        window.onclick = () => document.getElementById('dropdown').classList.remove('active');
+        // --- GOALS SYSTEM ---
+        function createGoal() {
+            const name = document.getElementById('m-name').value;
+            const target = parseFloat(document.getElementById('m-target').value);
+            const img = document.getElementById('m-img').value || 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=200';
 
-        // --- SISTEMA DE LOGIN/REGISTRO ---
-        function toggleAuthMode() {
-            mode = mode === 'reg' ? 'log' : 'reg';
-            document.getElementById('auth-title').innerText = mode === 'reg' ? 'Cadastrar' : 'Entrar';
-            document.getElementById('auth-btn').innerText = mode === 'reg' ? 'Cadastrar' : 'Entrar';
-            document.getElementById('auth-toggle').innerText = mode === 'reg' ? 'Já tem conta? Entrar' : 'Não tem conta? Cadastrar';
-            document.querySelectorAll('.reg-only').forEach(el => el.style.display = mode === 'reg' ? 'block' : 'none');
+            if(!name || !target) return alert("Preencha os dados!");
+
+            const goal = { id: Date.now(), name, target, current: 0, img };
+            currentUser.goals.push(goal);
+            updateUser();
+            renderGoals();
+            sendDiscord(`🎯 **Meta Criada**\n👤: ${currentUser.user}\n🏆: ${name}\n💰: R$ ${target}`);
         }
 
-        function handleAuth() {
-            const name = document.getElementById('in-name').value;
-            const user = document.getElementById('in-user').value;
-            const pass = document.getElementById('in-pass').value;
+        function addValueToGoal(id) {
+            const val = parseFloat(prompt("Quanto deseja adicionar?"));
+            if(!val) return;
+            const goal = currentUser.goals.find(g => g.id === id);
+            goal.current += val;
+            updateUser();
+            renderGoals();
+            sendDiscord(`➕ **Valor em Meta**\n👤: ${currentUser.user}\n🎯: ${goal.name}\n💵: + R$ ${val}`);
+        }
 
-            if(mode === 'reg') {
-                if(!name || !user || !pass) return alert("Preencha tudo!");
-                localStorage.setItem('cp_acc', JSON.stringify({name, user, pass}));
-                alert("Conta criada!");
-                toggleAuthMode();
-            } else {
-                const acc = JSON.parse(localStorage.getItem('cp_acc'));
-                if(acc && acc.user === user && acc.pass === pass) {
-                    localStorage.setItem('cp_logged', 'true');
-                    initApp();
-                } else {
-                    alert("Dados incorretos!");
-                }
+        function renderGoals() {
+            const cont = document.getElementById('goals-container');
+            cont.innerHTML = currentUser.goals.map(g => {
+                const perc = Math.min((g.current / g.target) * 100, 100);
+                return `
+                    <div class="card goal-card">
+                        <img src="${g.img}" class="goal-img">
+                        <div style="flex:1">
+                            <b>${g.name}</b><br>
+                            <small>R$ ${g.current.toFixed(2)} / R$ ${g.target.toFixed(2)}</small>
+                            <div class="progress-bar"><div class="progress-fill" style="width:${perc}%"></div></div>
+                            <button class="btn btn-primary" style="margin-top:10px; padding:5px" onclick="addValueToGoal(${g.id})">+ Valor</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            const total = currentUser.goals.reduce((a, b) => a + b.current, 0);
+            document.getElementById('global-balance').innerText = total.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+        }
+
+        // --- EXTRAS ---
+        function changeColor(c, save = true) {
+            document.documentElement.style.setProperty('--primary', c);
+            if(save) { currentUser.color = c; updateUser(); }
+        }
+
+        function saveBio() {
+            currentUser.bio = document.getElementById('p-bio').value;
+            updateUser();
+            alert("Bio salva!");
+        }
+
+        function changeBanner() {
+            const url = prompt("URL da nova imagem de banner:");
+            if(url) {
+                currentUser.banner = url;
+                document.getElementById('p-banner-img').src = url;
+                updateUser();
             }
+        }
+
+        function updateUser() {
+            let users = JSON.parse(localStorage.getItem('cp_users'));
+            const idx = users.findIndex(u => u.user === currentUser.user);
+            users[idx] = currentUser;
+            localStorage.setItem('cp_users', JSON.stringify(users));
         }
 
         function logout() {
-            localStorage.removeItem('cp_logged');
+            localStorage.removeItem('cp_session');
             location.reload();
         }
 
-        // --- CORE APP ---
-        function initApp() {
-            const acc = JSON.parse(localStorage.getItem('cp_acc'));
-            document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('nav-username').innerText = acc.name;
-            document.getElementById('p-name').innerText = acc.name;
-            document.getElementById('p-user').innerText = '@' + acc.user;
-
-            // Greet Brasília
-            const hour = new Date().getUTCHours() - 3;
-            const text = hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite";
-            document.getElementById('greet').innerHTML = `${text}, <span>${acc.name}</span>`;
-            
-            updateUI();
+        async function sendDiscord(m) {
+            fetch(WEBHOOK, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({content: m})});
         }
 
-        function addMoney() {
-            const val = parseFloat(document.getElementById('v-amount').value);
-            const desc = document.getElementById('v-desc').value;
-            const acc = JSON.parse(localStorage.getItem('cp_acc'));
-
-            if(!val || !desc) return alert("Preencha os campos!");
-
-            const data = JSON.parse(localStorage.getItem('cp_hist')) || [];
-            data.push({val, desc, user: acc.name, date: new Date().toLocaleString()});
-            localStorage.setItem('cp_hist', JSON.stringify(data));
-
-            fetch(HOOK, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({content: `💰 **Aporte**\n👤: ${acc.name}\n💵: R$ ${val}\n📝: ${desc}`})
-            });
-
-            document.getElementById('v-amount').value = '';
-            document.getElementById('v-desc').value = '';
-            updateUI();
+        // Auto-login
+        const session = localStorage.getItem('cp_session');
+        if(session) {
+            const users = JSON.parse(localStorage.getItem('cp_users'));
+            currentUser = users.find(u => u.user === session);
+            if(currentUser) init();
         }
 
-        function updateUI() {
-            const data = JSON.parse(localStorage.getItem('cp_hist')) || [];
-            const total = data.reduce((a, b) => a + b.val, 0);
-            document.getElementById('total-val').innerText = total.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-
-            const list = document.getElementById('history-list');
-            list.innerHTML = data.slice().reverse().map(i => `
-                <div style="display:flex; justify-content:space-between; padding:12px; background:#f9fafb; border-radius:10px; margin-bottom:10px; border-left:4px solid var(--primary)">
-                    <div><b>${i.desc}</b><br><small style="color:gray">${i.date} por ${i.user}</small></div>
-                    <div style="font-weight:800; color:var(--success)">+ R$ ${i.val.toFixed(2)}</div>
-                </div>
-            `).join('');
-        }
-
-        function setTheme(color) {
-            document.documentElement.style.setProperty('--primary', color);
-            alert("Tema atualizado!");
-        }
-
-        function clearData() {
-            if(confirm("Deseja apagar TUDO?")) {
-                localStorage.removeItem('cp_hist');
-                updateUI();
-            }
-        }
-
-        if(localStorage.getItem('cp_logged')) initApp();
+        window.onclick = () => document.getElementById('dropdown').classList.remove('active');
     </script>
 </body>
 </html>
