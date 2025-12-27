@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ControlPrice | Gestão de Ativos</title>
+    <title>ControlPrice | Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -18,194 +18,196 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg); color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
+        body { background-color: var(--bg); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
 
         /* --- Telas de Autenticação --- */
-        .auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: flex; align-items: center; justify-content: center; transition: 0.5s; }
+        .auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: flex; align-items: center; justify-content: center; }
         .auth-card { background: var(--white); padding: 2.5rem; border-radius: 20px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
-        .auth-card h2 { font-size: 1.8rem; margin-bottom: 0.5rem; font-weight: 800; color: var(--primary); }
-        .auth-card p { color: var(--text-sub); margin-bottom: 2rem; }
+        .auth-card h2 { font-size: 1.8rem; margin-bottom: 2rem; font-weight: 800; color: var(--primary); }
         .auth-card input { width: 100%; padding: 12px; margin-bottom: 1rem; border: 1px solid #e5e7eb; border-radius: 10px; outline: none; }
-        .auth-card button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; margin-bottom: 1rem; }
-        .auth-link { color: var(--primary); font-size: 0.9rem; cursor: pointer; text-decoration: underline; }
+        .auth-card button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; }
 
         /* --- Header --- */
         header { background: var(--white); padding: 0.8rem 10%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 100; }
-        .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: -1px; }
+        .logo { font-size: 1.4rem; font-weight: 800; cursor: pointer; }
         .logo span { color: var(--success); }
 
         /* --- User Menu --- */
-        .user-menu-container { position: relative; display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 5px 10px; border-radius: 50px; transition: 0.2s; }
-        .user-menu-container:hover { background: #f9fafb; }
-        .user-name { font-weight: 600; font-size: 0.9rem; }
+        .user-menu-container { position: relative; display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 5px 10px; border-radius: 50px; }
         .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
-        
-        .dropdown { position: absolute; top: 110%; right: 0; background: white; width: 200px; border-radius: 12px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); border: 1px solid #eee; display: none; overflow: hidden; }
-        .dropdown.active { display: block; animation: slideDown 0.2s ease-out; }
-        .dropdown-item { padding: 12px 16px; display: flex; align-items: center; gap: 10px; color: var(--text-main); text-decoration: none; font-size: 0.9rem; transition: 0.2s; }
+        .dropdown { position: absolute; top: 110%; right: 0; background: white; width: 220px; border-radius: 12px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); border: 1px solid #eee; display: none; overflow: hidden; }
+        .dropdown.active { display: block; }
+        .dropdown-item { padding: 12px 16px; display: flex; align-items: center; gap: 10px; color: var(--text-main); text-decoration: none; font-size: 0.9rem; cursor: pointer; transition: 0.2s; }
         .dropdown-item:hover { background: #f3f4f6; color: var(--primary); }
-        .dropdown-item.logout { color: var(--danger); border-top: 1px solid #eee; }
 
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        /* --- Main App --- */
+        main { padding: 2rem 10%; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; }
+        .view { display: none; animation: fadeIn 0.3s ease; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- Content --- */
-        main { padding: 3rem 10%; max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
-        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .grid-dashboard { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
+        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
         
-        .welcome-section h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; }
-        .welcome-section h1 span { color: var(--success); }
-        
-        .balance-card { background: linear-gradient(135deg, var(--primary), #6366f1); color: white; margin-top: 2rem; position: relative; overflow: hidden; }
-        .balance-card h3 { opacity: 0.8; font-weight: 400; }
-        .balance-value { font-size: 3rem; font-weight: 800; margin: 10px 0; }
-        
-        /* --- Forms & Buttons --- */
-        .btn-add { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 15px; }
-        .form-group { margin-bottom: 1rem; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem; color: var(--text-sub); }
+        /* --- Perfil & Config --- */
+        .profile-header { text-align: center; margin-bottom: 2rem; }
+        .profile-avatar-large { width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--primary); margin-bottom: 10px; }
+        .info-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #f3f4f6; }
+        .info-row b { color: var(--text-sub); }
 
-        /* --- Stats --- */
-        .history-list { margin-top: 1.5rem; }
-        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f9fafb; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid var(--success); }
-        .item-info b { display: block; }
-        .item-info small { color: var(--text-sub); }
-        .item-price { font-weight: 800; color: var(--success); }
-
-        /* --- Footer --- */
-        footer { margin-top: auto; background: white; padding: 2rem; border-top: 1px solid #eee; text-align: center; }
-        .footer-links { display: flex; justify-content: center; gap: 20px; margin-top: 15px; }
-        .footer-links a { color: var(--text-main); font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        /* --- Buttons --- */
+        .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-danger { background: #fee2e2; color: var(--danger); margin-top: 10px; }
 
         .hidden { display: none; }
+        footer { padding: 2rem; text-align: center; background: white; border-top: 1px solid #eee; margin-top: auto; }
 
-        @media (max-width: 900px) {
-            main { grid-template-columns: 1fr; padding: 2rem 5%; }
-            header { padding: 0.8rem 5%; }
-        }
+        @media (max-width: 900px) { .grid-dashboard { grid-template-columns: 1fr; } main { padding: 1rem 5%; } }
     </style>
 </head>
 <body>
 
-    <div id="screen-register" class="auth-overlay hidden">
-        <div class="auth-card">
-            <h2>Control<span>Price</span></h2>
-            <p>Crie sua conta para começar.</p>
-            <input type="text" id="reg-name" placeholder="Nome Completo">
-            <input type="text" id="reg-user" placeholder="Nome de Usuário">
-            <input type="password" id="reg-pass" placeholder="Senha">
-            <button onclick="register()">Cadastrar</button>
-            <div class="auth-link" onclick="toggleAuth('login')">Já tenho conta? Entrar</div>
-        </div>
-    </div>
-
-    <div id="screen-login" class="auth-overlay">
-        <div class="auth-card">
-            <h2>Control<span>Price</span></h2>
-            <p>Acesse seu painel financeiro.</p>
-            <input type="text" id="log-user" placeholder="Usuário">
-            <input type="password" id="log-pass" placeholder="Senha">
-            <button onclick="login()">Entrar</button>
-            <div class="auth-link" onclick="toggleAuth('register')">Não tem conta? Criar agora</div>
+    <div id="auth-screen" class="auth-overlay">
+        <div class="auth-card" id="auth-box">
+            <h2 id="auth-title">ControlPrice</h2>
+            <div id="auth-inputs">
+                <input type="text" id="in-name" class="reg-only" placeholder="Nome Completo">
+                <input type="text" id="in-user" placeholder="Usuário">
+                <input type="password" id="in-pass" placeholder="Senha">
+                <button class="btn btn-primary" onclick="handleAuth()" id="auth-btn">Cadastrar</button>
+            </div>
+            <p style="margin-top:15px; font-size:0.85rem; color:var(--primary); cursor:pointer" onclick="toggleAuthMode()" id="auth-toggle">Já tem conta? Entrar</p>
         </div>
     </div>
 
     <header>
-        <div class="logo">Control<span>Price</span></div>
+        <div class="logo" onclick="showView('home')">Control<span>Price</span></div>
         <div class="user-menu-container" onclick="toggleDropdown(event)">
-            <span class="user-name" id="display-user-name">Usuário</span>
+            <span style="font-weight:600" id="nav-username">Usuário</span>
             <img class="user-avatar" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJgAAACUCAMAAABY3hBoAAAAY1BMVEX///8AAABERET5+fny8vL29va3t7cXFxdVVVXPz8/Y2Njh4eHMzMzu7u7S0tJfX1+Li4sgICCtra1paWlPT0/BwcGjo6OXl5eEhIQSEhIsLCw+Pj4yMjJaWlpxcXE5OTl8fHwMOrCfAAAE40lEQVR4nO1b6baCOAy+yKJSUFYVV97/KWe8zk1SQGlpU8+c0++v0HylaXZ/fjw8PDw8PDw8PDw8PDwsIxZpcqz3TbOviyoV0bf5vJAnxT6QcCuS/Nusoqzuggl0dfbV75Zspli90FThl1iF7fU9rSfOyVeoifozrSfq1D2valK3Rjg4phWelGj9iz52ySu+qPIKgqvD6ylWE/Jv976/7x/jXx7CFa9oLUvuVqcsin9vYBhHWbEa/B44MrfR4HudsuET20J+YuWGWSN9rdOk0LyQLu3KBa8jlXjbvXsslRzokZ9XS+UVH2xBKO0g4eYVlurSEnrk3OaMqPW6nXu4Jbs48fJKiSWY5SWde/dWG63gjpKUvGCFz9ecvATKuau90eMbnA6AiFFU5rjT3coSCPSEleo7eDWvfJ8MhWyUb394c2DL9ktk4M3ccPEKUcN0XkMt40oBUpCg5frQNY3CEEtYKGELrxVMxCAt0ouvcoiT9jy8QhCgacTBXTQ8SpZfFh4JqABT9J+e/wRoJovgMEseR76DIEbTUoIlW29ZiGUQ8mheezAzax57gcQ0T0QwE9vCUSqEiNKLzMRQx5RDixfA95c8OiagHKaZjIG5OPNUpTAD1wz5ILzkysihrqkejT0RQrTEZPlx56XWkaBh5gquMYDVsrAYKWpeGmXkIEGrSIJFGLagH3MRDS3G7ZRcvEikqKEtmPLxlXwyCN/V1V+A6rNF1j80TVLOeDB7uzG2I0gpQvFikrIK1538BdaV1GKrlLzAyYt+sofKyZA6Mm+PJCSV1ctsZyEmvG7MJUVMeuddHylbBAFPxENAS/ifw5iUdg2ZK50/NIl7mrMPNy2hZeSHgxZELrcW3hzRTmpTsFYTAYkksrtPnKfo5XYSe5V/ilkQXA8pOakorYZNQ1bTSnEcCA66pi+qdrdrq6LfDHtvLvo1f2iHsj/B0Tm+kKh1xJ2e4wv5h4kLio3zmZVhO3UaF9e8RDVP6oWDs474E9V5ntEfyoOzeZV2ZBBm4GaUJlIYnRli70DVqvefa/3+p457lCYcGf1fsXWRtG223WZtmxT1JL8Ta6AoxoMozX08XhclfTN6kLH5Jod+v+jbN/F11I7Gkkq2vHLoIVefZ+rCamiDmbzmgNe5mk1GouTqgJnMqzyq2aZDyc1M5qU+4yfu0ouaBe950LQt6LRCv4MUIlnu2uTUTqw1F0/pcZ6tWo2YuqGN9tKCZr56leUZUHvfLPB7EWVmsc+bUbVf5I9jegWsXYCQ+JfHwhlNWl+Zr8YoghzkarHq5mR3lgoZZNIoMGgG0WXs2AwyaWSUipEE/m4jpN2R9cxWIju0EWhgAlkaKm2MKUxjzot8MOOcOrH5yTDe2xub7BAdSG+6lkAPbMEuEktt6jIPsNLFnBdVWNPalOVOEE5Gnc0WwjDMTlAQY5/AzMiiN7KUsaJqGJ1lCEHB2tJkgoCgsTY5Amw2WpvIB/Vfm9xLtK7Wag9YWDO5TagR1mZMMMgwUTKw1Pb+wxNBE8BkLBZ2ZyVOeQFjjOVr4ESuxR4CWqDl1xL1wWKxHrV/+bVEB2Ixs8cZieWLQvxkc+px8XwcAc6JWpxIQ9u/3DaCGSstFhxy8CbLb1T1WL2wpCzwDvHmv0UfjttfHh4eHh4eHh4eHh4e/2f8A+u5L3xKDUsWAAAAAElFTkSuQmCC" alt="Profile">
-            
-            <div class="dropdown" id="user-dropdown">
-                <a class="dropdown-item" onclick="alert('Funcionalidade Ver Perfil em desenvolvimento')"><i class="fas fa-user"></i> Ver Perfil</a>
-                <a class="dropdown-item" onclick="alert('Funcionalidade Configurações em desenvolvimento')"><i class="fas fa-cog"></i> Configurações</a>
-                <a class="dropdown-item logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a>
+            <div class="dropdown" id="dropdown">
+                <div class="dropdown-item" onclick="showView('profile')"><i class="fas fa-user"></i> Ver Perfil</div>
+                <div class="dropdown-item" onclick="showView('config')"><i class="fas fa-cog"></i> Configurações</div>
+                <div class="dropdown-item" style="color:var(--danger); border-top:1px solid #eee" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</div>
             </div>
         </div>
     </header>
 
     <main>
-        <section>
-            <div class="welcome-section">
-                <h1 id="greeting">Boa tarde, <span>Usuário</span></h1>
-                <p style="color: var(--text-sub)">Bem-vindo ao ControlPrice. Sua meta para 2028 começa hoje.</p>
+        <div id="view-home" class="view active">
+            <div class="grid-dashboard">
+                <section>
+                    <h1 id="greet" style="font-size: 2rem; margin-bottom: 20px;">Olá, <span>...</span></h1>
+                    <div class="card" style="background: linear-gradient(135deg, var(--primary), #6366f1); color: white;">
+                        <p style="opacity:0.8">Saldo Total</p>
+                        <h2 id="total-val" style="font-size: 2.5rem; margin: 10px 0;">R$ 0,00</h2>
+                        <p style="font-size:0.8rem"><i class="fas fa-envelope"></i> silva777onlycontact@gmail.com</p>
+                    </div>
+                    <div class="card">
+                        <h3><i class="fas fa-plus-circle"></i> Novo Aporte</h3>
+                        <input type="number" id="v-amount" placeholder="Valor R$" style="width:100%; padding:12px; margin:10px 0; border:1px solid #eee; border-radius:8px">
+                        <input type="text" id="v-desc" placeholder="Descrição" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #eee; border-radius:8px">
+                        <button class="btn btn-primary" onclick="addMoney()">Registrar</button>
+                    </div>
+                </section>
+                <section>
+                    <div class="card">
+                        <h3><i class="fas fa-history"></i> Atividades</h3>
+                        <div id="history-list" style="margin-top:15px"></div>
+                    </div>
+                </section>
             </div>
+        </div>
 
-            <div class="card balance-card">
-                <h3>Saldo Consolidado</h3>
-                <div class="balance-value" id="total-balance">R$ 0,00</div>
-                <div style="font-size: 0.8rem; opacity: 0.9;">
-                    <i class="fas fa-key"></i> PIX: silva777onlycontact@gmail.com
+        <div id="view-profile" class="view">
+            <div class="card" style="max-width: 600px; margin: 0 auto;">
+                <div class="profile-header">
+                    <img class="profile-avatar-large" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJgAAACUCAMAAABY3hBoAAAAY1BMVEX///8AAABERET5+fny8vL29va3t7cXFxdVVVXPz8/Y2Njh4eHMzMzu7u7S0tJfX1+Li4sgICCtra1paWlPT0/BwcGjo6OXl5eEhIQSEhIsLCw+Pj4yMjJaWlpxcXE5OTl8fHwMOrCfAAAE40lEQVR4nO1b6baCOAy+yKJSUFYVV97/KWe8zk1SQGlpU8+c0++v0HylaXZ/fjw8PDw8PDw8PDw8PDwsIxZpcqz3TbOviyoV0bf5vJAnxT6QcCuS/Nusoqzuggl0dfbV75Zspli90FThl1iF7fU9rSfOyVeoifozrSfq1D2valK3Rjg4phWelGj9iz52ySu+qPIKgqvD6ylWE/Jv976/7x/jXx7CFa9oLUvuVqcsin9vYBhHWbEa/B44MrfR4HudsuET20J+YuWGWSN9rdOk0LyQLu3KBa8jlXjbvXsslRzokZ9XS+UVH2xBKO0g4eYVlurSEnrk3OaMqPW6nXu4Jbs48fJKiSWY5SWde/dWG63gjpKUvGCFz9ecvATKuau90eMbnA6AiFFU5rjT3coSCPSEleo7eDWvfJ8MhWyUb394c2DL9ktk4M3ccPEKUcN0XkMt40oBUpCg5frQNY3CEEtYKGELrxVMxCAt0ouvcoiT9jy8QhCgacTBXTQ8SpZfFh4JqABT9J+e/wRoJovgMEseR76DIEbTUoIlW29ZiGUQ8mheezAzax57gcQ0T0QwE9vCUSqEiNKLzMRQx5RDixfA95c8OiagHKaZjIG5OPNUpTAD1wz5ILzkysihrqkejT0RQrTEZPlx56XWkaBh5gquMYDVsrAYKWpeGmXkIEGrSIJFGLagH3MRDS3G7ZRcvEikqKEtmPLxlXwyCN/V1V+A6rNF1j80TVLOeDB7uzG2I0gpQvFikrIK1538BdaV1GKrlLzAyYt+sofKyZA6Mm+PJCSV1ctsZyEmvG7MJUVMeuddHylbBAFPxENAS/ifw5iUdg2ZK50/NIl7mrMPNy2hZeSHgxZELrcW3hzRTmpTsFYTAYkksrtPnKfo5XYSe5V/ilkQXA8pOakorYZNQ1bTSnEcCA66pi+qdrdrq6LfDHtvLvo1f2iHsj/B0Tm+kKh1xJ2e4wv5h4kLio3zmZVhO3UaF9e8RDVP6oWDs474E9V5ntEfyoOzeZV2ZBBm4GaUJlIYnRli70DVqvefa/3+p457lCYcGf1fsXWRtG223WZtmxT1JL8Ta6AoxoMozX08XhclfTN6kLH5Jod+v+jbN/F11I7Gkkq2vHLoIVefZ+rCamiDmbzmgNe5mk1GouTqgJnMqzyq2aZDyc1M5qU+4yfu0ouaBe950LQt6LRCv4MUIlnu2uTUTqw1F0/pcZ6tWo2YuqGN9tKCZr56leUZUHvfLPB7EWVmsc+bUbVf5I9jegWsXYCQ+JfHwhlNWl+Zr8YoghzkarHq5mR3lgoZZNIoMGgG0WXs2AwyaWSUipEE/m4jpN2R9cxWIju0EWhgAlkaKm2MKUxjzot8MOOcOrH5yTDe2xub7BAdSG+6lkAPbMEuEktt6jIPsNLFnBdVWNPalOVOEE5Gnc0WwjDMTlAQY5/AzMiiN7KUsaJqGJ1lCEHB2tJkgoCgsTY5Amw2WpvIB/Vfm9xLtK7Wag9YWDO5TagR1mZMMMgwUTKw1Pb+wxNBE8BkLBZ2ZyVOeQFjjOVr4ESuxR4CWqDl1xL1wWKxHrV/+bVEB2Ixs8cZieWLQvxkc+px8XwcAc6JWpxIQ9u/3DaCGSstFhxy8CbLb1T1WL2wpCzwDvHmv0UfjttfHh4eHh4eHh4eHh4e/2f8A+u5L3xKDUsWAAAAAElFTkSuQmCC">
+                    <h2 id="p-name">Nome do Usuário</h2>
+                    <p id="p-user">@usuario</p>
                 </div>
+                <div class="info-row"><b>Status da Conta:</b> <span style="color:var(--success)">Administrador</span></div>
+                <div class="info-row"><b>Membro desde:</b> <span>2025</span></div>
+                <div class="info-row"><b>Objetivo:</b> <span>Juntar dinheiro até 2028</span></div>
+                <button class="btn btn-primary" style="margin-top:20px" onclick="showView('home')">Voltar ao Painel</button>
             </div>
+        </div>
 
-            <div class="card" style="margin-top: 20px;">
-                <h3><i class="fas fa-plus-circle"></i> Novo Registro</h3>
-                <div class="form-group" style="margin-top: 15px;">
-                    <label>Valor do Aporte (R$)</label>
-                    <input type="number" id="valor-input" placeholder="Ex: 500.00">
+        <div id="view-config" class="view">
+            <div class="card" style="max-width: 600px; margin: 0 auto;">
+                <h3><i class="fas fa-tools"></i> Configurações</h3>
+                <div style="margin-top:20px">
+                    <label style="display:block; margin-bottom:10px; font-weight:600">Cor do Tema</label>
+                    <div style="display:flex; gap:10px">
+                        <div onclick="setTheme('#4f46e5')" style="width:30px; height:30px; background:#4f46e5; border-radius:50%; cursor:pointer"></div>
+                        <div onclick="setTheme('#10b981')" style="width:30px; height:30px; background:#10b981; border-radius:50%; cursor:pointer"></div>
+                        <div onclick="setTheme('#f43f5e')" style="width:30px; height:30px; background:#f43f5e; border-radius:50%; cursor:pointer"></div>
+                        <div onclick="setTheme('#111827')" style="width:30px; height:30px; background:#111827; border-radius:50%; cursor:pointer"></div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Descrição</label>
-                    <input type="text" id="desc-input" placeholder="Ex: Salário Mensal">
-                </div>
-                <button class="btn-add" onclick="registrarGasto()">Confirmar Aporte</button>
-            </div>
-        </section>
-
-        <section>
-            <div class="card">
-                <h3><i class="fas fa-history"></i> Atividade Recente</h3>
-                <div id="lista-atividades" class="history-list">
-                    <p style="text-align: center; color: var(--text-sub);">Nenhuma atividade registrada.</p>
+                <div style="margin-top:30px">
+                    <label style="display:block; margin-bottom:10px; font-weight:600">Segurança</label>
+                    <button class="btn btn-primary" onclick="alert('Funcionalidade de trocar senha em breve!')">Alterar Senha</button>
+                    <button class="btn btn-danger" onclick="clearData()">Limpar Todo Histórico</button>
                 </div>
             </div>
-        </section>
+        </div>
     </main>
 
     <footer>
-        <p>&copy; 2025 ControlPrice - Gestão Financeira Profissional</p>
-        <div class="footer-links">
-            <a href="https://portfoliosilva.github.io/portfoliosilva/" target="_blank"><i class="fas fa-briefcase"></i> Portfólio</a>
-            <a href="https://linktr.ee/silva777only" target="_blank"><i class="fas fa-link"></i> Linktree</a>
+        <p>&copy; 2025 ControlPrice</p>
+        <div style="margin-top:10px">
+            <a href="https://portfoliosilva.github.io/portfoliosilva/" style="color:var(--primary); text-decoration:none; margin:0 10px">Portfólio</a>
+            <a href="https://linktr.ee/silva777only" style="color:var(--primary); text-decoration:none; margin:0 10px">Linktree</a>
         </div>
     </footer>
 
     <script>
-        const WEBHOOK = "https://discord.com/api/webhooks/1454574312878243932/t2mqTqD0e-z_ifhATM_XgKkkimvNooM8QR9ZqvdGSTiW271g3e-TslVKITz2mFw9zkAC";
-        
-        // --- LOGICA DE AUTENTICAÇÃO ---
-        function toggleAuth(type) {
-            document.getElementById('screen-register').classList.add('hidden');
-            document.getElementById('screen-login').classList.add('hidden');
-            document.getElementById('screen-' + type).classList.remove('hidden');
+        const HOOK = "https://discord.com/api/webhooks/1454574312878243932/t2mqTqD0e-z_ifhATM_XgKkkimvNooM8QR9ZqvdGSTiW271g3e-TslVKITz2mFw9zkAC";
+        let mode = 'reg'; 
+
+        // --- SISTEMA DE NAVEGAÇÃO ---
+        function showView(viewName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-' + viewName).classList.add('active');
+            document.getElementById('dropdown').classList.remove('active');
         }
 
-        function register() {
-            const name = document.getElementById('reg-name').value;
-            const user = document.getElementById('reg-user').value;
-            const pass = document.getElementById('reg-pass').value;
-
-            if(!name || !user || !pass) return alert("Preencha todos os campos!");
-
-            const userData = { name, user, pass };
-            localStorage.setItem('cp_account', JSON.stringify(userData));
-            alert("Cadastro realizado! Agora faça login.");
-            toggleAuth('login');
+        function toggleDropdown(e) {
+            e.stopPropagation();
+            document.getElementById('dropdown').classList.toggle('active');
         }
 
-        function login() {
-            const user = document.getElementById('log-user').value;
-            const pass = document.getElementById('log-pass').value;
-            const stored = JSON.parse(localStorage.getItem('cp_account'));
+        window.onclick = () => document.getElementById('dropdown').classList.remove('active');
 
-            if(stored && stored.user === user && stored.pass === pass) {
-                localStorage.setItem('cp_logged', 'true');
-                localStorage.setItem('cp_current_name', stored.name);
-                
-                sendDiscord(`🔑 **Login Detectado**\n👤 Usuário: ${stored.name} (@${user})`);
-                location.reload();
+        // --- SISTEMA DE LOGIN/REGISTRO ---
+        function toggleAuthMode() {
+            mode = mode === 'reg' ? 'log' : 'reg';
+            document.getElementById('auth-title').innerText = mode === 'reg' ? 'Cadastrar' : 'Entrar';
+            document.getElementById('auth-btn').innerText = mode === 'reg' ? 'Cadastrar' : 'Entrar';
+            document.getElementById('auth-toggle').innerText = mode === 'reg' ? 'Já tem conta? Entrar' : 'Não tem conta? Cadastrar';
+            document.querySelectorAll('.reg-only').forEach(el => el.style.display = mode === 'reg' ? 'block' : 'none');
+        }
+
+        function handleAuth() {
+            const name = document.getElementById('in-name').value;
+            const user = document.getElementById('in-user').value;
+            const pass = document.getElementById('in-pass').value;
+
+            if(mode === 'reg') {
+                if(!name || !user || !pass) return alert("Preencha tudo!");
+                localStorage.setItem('cp_acc', JSON.stringify({name, user, pass}));
+                alert("Conta criada!");
+                toggleAuthMode();
             } else {
-                alert("Usuário ou senha incorretos!");
+                const acc = JSON.parse(localStorage.getItem('cp_acc'));
+                if(acc && acc.user === user && acc.pass === pass) {
+                    localStorage.setItem('cp_logged', 'true');
+                    initApp();
+                } else {
+                    alert("Dados incorretos!");
+                }
             }
         }
 
@@ -214,89 +216,71 @@
             location.reload();
         }
 
-        // --- SISTEMA PRINCIPAL ---
-        document.addEventListener('DOMContentLoaded', () => {
-            if(localStorage.getItem('cp_logged') === 'true') {
-                document.getElementById('screen-login').classList.add('hidden');
-                initApp();
-            }
-        });
-
+        // --- CORE APP ---
         function initApp() {
-            const name = localStorage.getItem('cp_current_name');
-            document.getElementById('display-user-name').innerText = name;
-            
-            // Saudação Brasília
+            const acc = JSON.parse(localStorage.getItem('cp_acc'));
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('nav-username').innerText = acc.name;
+            document.getElementById('p-name').innerText = acc.name;
+            document.getElementById('p-user').innerText = '@' + acc.user;
+
+            // Greet Brasília
             const hour = new Date().getUTCHours() - 3;
-            let greet = "Boa noite";
-            if(hour >= 5 && hour < 12) greet = "Bom dia";
-            else if(hour >= 12 && hour < 18) greet = "Boa tarde";
+            const text = hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite";
+            document.getElementById('greet').innerHTML = `${text}, <span>${acc.name}</span>`;
             
-            document.getElementById('greeting').innerHTML = `${greet}, <span>${name}</span>`;
-            updateDashboard();
+            updateUI();
         }
 
-        function toggleDropdown(e) {
-            e.stopPropagation();
-            document.getElementById('user-dropdown').classList.toggle('active');
-        }
+        function addMoney() {
+            const val = parseFloat(document.getElementById('v-amount').value);
+            const desc = document.getElementById('v-desc').value;
+            const acc = JSON.parse(localStorage.getItem('cp_acc'));
 
-        window.onclick = () => document.getElementById('user-dropdown').classList.remove('active');
+            if(!val || !desc) return alert("Preencha os campos!");
 
-        // --- GESTÃO DE GASTOS ---
-        function registrarGasto() {
-            const valor = parseFloat(document.getElementById('valor-input').value);
-            const desc = document.getElementById('desc-input').value;
-            const name = localStorage.getItem('cp_current_name');
+            const data = JSON.parse(localStorage.getItem('cp_hist')) || [];
+            data.push({val, desc, user: acc.name, date: new Date().toLocaleString()});
+            localStorage.setItem('cp_hist', JSON.stringify(data));
 
-            if(!valor || !desc) return alert("Preencha o valor e a descrição!");
-
-            const transacao = {
-                id: Date.now(),
-                user: name,
-                valor: valor,
-                desc: desc,
-                data: new Date().toLocaleDateString('pt-BR')
-            };
-
-            let historico = JSON.parse(localStorage.getItem('cp_history')) || [];
-            historico.push(transacao);
-            localStorage.setItem('cp_history', JSON.stringify(historico));
-
-            sendDiscord(`💰 **Novo Aporte Registrado**\n👤 Autor: ${name}\n💵 Valor: R$ ${valor.toFixed(2)}\n📝 Descrição: ${desc}`);
-            
-            document.getElementById('valor-input').value = "";
-            document.getElementById('desc-input').value = "";
-            updateDashboard();
-        }
-
-        function updateDashboard() {
-            const historico = JSON.parse(localStorage.getItem('cp_history')) || [];
-            const total = historico.reduce((acc, t) => acc + t.valor, 0);
-            
-            document.getElementById('total-balance').innerText = total.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-
-            const lista = document.getElementById('lista-atividades');
-            if(historico.length > 0) {
-                lista.innerHTML = historico.slice().reverse().map(t => `
-                    <div class="history-item">
-                        <div class="item-info">
-                            <b>${t.desc}</b>
-                            <small>${t.data} • por ${t.user}</small>
-                        </div>
-                        <div class="item-price">R$ ${t.valor.toFixed(2)}</div>
-                    </div>
-                `).join('');
-            }
-        }
-
-        async function sendDiscord(msg) {
-            fetch(WEBHOOK, {
+            fetch(HOOK, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ content: msg })
-            }).catch(e => console.log("Erro webhook"));
+                body: JSON.stringify({content: `💰 **Aporte**\n👤: ${acc.name}\n💵: R$ ${val}\n📝: ${desc}`})
+            });
+
+            document.getElementById('v-amount').value = '';
+            document.getElementById('v-desc').value = '';
+            updateUI();
         }
+
+        function updateUI() {
+            const data = JSON.parse(localStorage.getItem('cp_hist')) || [];
+            const total = data.reduce((a, b) => a + b.val, 0);
+            document.getElementById('total-val').innerText = total.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+
+            const list = document.getElementById('history-list');
+            list.innerHTML = data.slice().reverse().map(i => `
+                <div style="display:flex; justify-content:space-between; padding:12px; background:#f9fafb; border-radius:10px; margin-bottom:10px; border-left:4px solid var(--primary)">
+                    <div><b>${i.desc}</b><br><small style="color:gray">${i.date} por ${i.user}</small></div>
+                    <div style="font-weight:800; color:var(--success)">+ R$ ${i.val.toFixed(2)}</div>
+                </div>
+            `).join('');
+        }
+
+        function setTheme(color) {
+            document.documentElement.style.setProperty('--primary', color);
+            alert("Tema atualizado!");
+        }
+
+        function clearData() {
+            if(confirm("Deseja apagar TUDO?")) {
+                localStorage.removeItem('cp_hist');
+                updateUI();
+            }
+        }
+
+        if(localStorage.getItem('cp_logged')) initApp();
     </script>
 </body>
 </html>
