@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ControlPrice | Finance Management</title>
+    <title>ControlPrice | Enterprise</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -20,78 +20,81 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background-color: var(--bg); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; transition: 0.3s; }
 
+        /* --- Notificações Personalizadas --- */
+        #notification-container { position: fixed; top: 20px; right: 20px; z-index: 3000; }
+        .toast { background: var(--white); border-left: 5px solid var(--primary); padding: 15px 25px; border-radius: 8px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); margin-bottom: 10px; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
         /* --- Auth --- */
         .auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: flex; align-items: center; justify-content: center; }
-        .auth-card { background: var(--white); padding: 2.5rem; border-radius: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        .auth-card { background: var(--white); padding: 2.5rem; border-radius: 24px; box-shadow: 0 20px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
         .auth-card input, .form-input { width: 100%; padding: 12px; margin-bottom: 1rem; border: 1px solid #e5e7eb; border-radius: 12px; outline: none; }
-        .btn { width: 100%; padding: 12px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn { width: 100%; padding: 12px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; transition: 0.2s; }
         .btn-primary { background: var(--primary); color: white; }
 
         /* --- Header --- */
         header { background: var(--white); padding: 0.8rem 10%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 100; }
-        .logo { font-size: 1.4rem; font-weight: 800; cursor: pointer; }
         .user-nav { display: flex; align-items: center; gap: 15px; cursor: pointer; position: relative; }
         .avatar-circle { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
-
-        /* --- Main Layout --- */
-        main { padding: 2rem 10%; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; }
-        .view { display: none; animation: fadeIn 0.4s ease; }
-        .view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- Cards & Components --- */
-        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .grid-2 { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
-        
-        /* --- Profile Page --- */
-        .profile-banner { height: 150px; background: var(--primary); border-radius: 20px 20px 0 0; position: relative; cursor: pointer; overflow: hidden; }
-        .profile-banner img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-info-card { text-align: center; margin-top: -50px; }
-        .avatar-large { width: 100px; height: 100px; border-radius: 50%; border: 5px solid white; background: white; margin-bottom: 10px; position: relative; }
-
-        /* --- Goals --- */
-        .goal-card { border: 1px solid #eee; padding: 15px; border-radius: 15px; margin-top: 15px; display: flex; gap: 15px; align-items: center; }
-        .goal-img { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; }
-        .progress-bar { height: 8px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--success); width: 0%; }
-
-        /* --- Dropdown --- */
-        .dropdown { position: absolute; top: 110%; right: 0; background: white; width: 220px; border-radius: 12px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); border: 1px solid #eee; display: none; }
+        .dropdown { position: absolute; top: 110%; right: 0; background: white; width: 220px; border-radius: 12px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); display: none; overflow: hidden; }
         .dropdown.active { display: block; }
         .dropdown-item { padding: 12px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .dropdown-item:hover { background: #f3f4f6; }
 
+        /* --- App Engine --- */
+        main { padding: 2rem 10%; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; }
+        .view { display: none; animation: fadeIn 0.4s ease; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .grid-2 { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
+
+        /* --- Profile --- */
+        .profile-banner { height: 120px; background: var(--primary); border-radius: 20px 20px 0 0; cursor: pointer; }
+        .avatar-large { width: 90px; height: 90px; border-radius: 50%; border: 4px solid white; margin-top: -45px; margin-left: auto; margin-right: auto; display: block; background: white; }
+
+        /* --- Chat Flutuante --- */
+        #chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+        #chat-btn { width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: none; font-size: 1.5rem; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        #chat-box { width: 300px; height: 400px; background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: absolute; bottom: 70px; right: 0; display: none; flex-direction: column; overflow: hidden; }
+        #chat-box.active { display: flex; }
+        .chat-header { background: var(--primary); color: white; padding: 15px; font-weight: bold; }
+        .chat-msgs { flex: 1; padding: 15px; overflow-y: auto; font-size: 0.9rem; }
+        .chat-input { display: flex; border-top: 1px solid #eee; }
+        .chat-input input { flex: 1; padding: 10px; border: none; outline: none; }
+
+        footer { padding: 2rem; text-align: center; border-top: 1px solid #eee; background: white; }
         .hidden { display: none; }
-        footer { padding: 2rem; text-align: center; background: white; border-top: 1px solid #eee; }
-        
-        @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } main { padding: 1rem 5%; } }
     </style>
 </head>
 <body>
 
+    <div id="notification-container"></div>
+
     <div id="auth-screen" class="auth-overlay">
         <div class="auth-card">
-            <h2 id="auth-title">ControlPrice</h2>
-            <div id="reg-fields">
+            <h2>ControlPrice</h2>
+            <div id="reg-box">
                 <input type="text" id="in-full-name" placeholder="Nome Completo">
             </div>
             <input type="text" id="in-user" placeholder="Usuário">
             <input type="password" id="in-pass" placeholder="Senha">
             <button class="btn btn-primary" onclick="handleAuth()" id="auth-btn">Cadastrar</button>
-            <p style="margin-top:15px; font-size:0.8rem; color:var(--primary); cursor:pointer" onclick="toggleAuth()">Alternar Login/Cadastro</p>
+            <p onclick="toggleAuth()" style="color:var(--primary); font-size:0.8rem; margin-top:15px; cursor:pointer">Entrar / Cadastrar</p>
         </div>
     </div>
 
     <header>
         <div class="logo" onclick="showView('home')">Control<span>Price</span></div>
         <div class="user-nav" onclick="toggleDropdown(event)">
-            <b id="nav-user">Silva777</b>
-            <img class="avatar-circle" id="nav-avatar" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJgAAACUCAMAAABY3hBoAAAAY1BMVEX///8AAABERET5+fny8vL29va3t7cXFxdVVVXPz8/Y2Njh4eHMzMzu7u7S0tJfX1+Li4sgICCtra1paWlPT0/BwcGjo6OXl5eEhIQSEhIsLCw+Pj4yMjJaWlpxcXE5OTl8fHwMOrCfAAAE40lEQVR4nO1b6baCOAy+yKJSUFYVV97/KWe8zk1SQGlpU8+c0++v0HylaXZ/fjw8PDw8PDw8PDw8PDwsIxZpcqz3TbOviyoV0bf5vJAnxT6QcCuS/Nusoqzuggl0dfbV75Zspli90FThl1iF7fU9rSfOyVeoifozrSfq1D2valK3Rjg4phWelGj9iz52ySu+qPIKgqvD6ylWE/Jv976/7x/jXx7CFa9oLUvuVqcsin9vYBhHWbEa/B44MrfR4HudsuET20J+YuWGWSN9rdOk0LyQLu3KBa8jlXjbvXsslRzokZ9XS+UVH2xBKO0g4eYVlurSEnrk3OaMqPW6nXu4Jbs48fJKiSWY5SWde/dWG63gjpKUvGCFz9ecvATKuau90eMbnA6AiFFU5rjT3coSCPSEleo7eDWvfJ8MhWyUb394c2DL9ktk4M3ccPEKUcN0XkMt40oBUpCg5frQNY3CEEtYKGELrxVMxCAt0ouvcoiT9jy8QhCgacTBXTQ8SpZfFh4JqABT9J+e/wRoJovgMEseR76DIEbTUoIlW29ZiGUQ8mheezAzax57gcQ0T0QwE9vCUSqEiNKLzMRQx5RDixfA95c8OiagHKaZjIG5OPNUpTAD1wz5ILzkysihrqkejT0RQrTEZPlx56XWkaBh5gquMYDVsrAYKWpeGmXkIEGrSIJFGLagH3MRDS3G7ZRcvEikqKEtmPLxlXwyCN/V1V+A6rNF1j80TVLOeDB7uzG2I0gpQvFikrIK1538BdaV1GKrlLzAyYt+sofKyZA6Mm+PJCSV1ctsZyEmvG7MJUVMeuddHylbBAFPxENAS/ifw5iUdg2ZK50/NIl7mrMPNy2hZeSHgxZELrcW3hzRTmpTsFYTAYkksrtPnKfo5XYSe5V/ilkQXA8pOakorYZNQ1bTSnEcCA66pi+qdrdrq6LfDHtvLvo1f2iHsj/B0Tm+kKh1xJ2e4wv5h4kLio3zmZVhO3UaF9e8RDVP6oWDs474E9V5ntEfyoOzeZV2ZBBm4GaUJlIYnRli70DVqvefa/3+p457lCYcGf1fsXWRtG223WZtmxT1JL8Ta6AoxoMozX08XhclfTN6kLH5Jod+v+jbN/F11I7Gkkq2vHLoIVefZ+rCamiDmbzmgNe5mk1GouTqgJnMqzyq2aZDyc1M5qU+4yfu0ouaBe950LQt6LRCv4MUIlnu2uTUTqw1F0/pcZ6tWo2YuqGN9tKCZr56leUZUHvfLPB7EWVmsc+bUbVf5I9jegWsXYCQ+JfHwhlNWl+Zr8YoghzkarHq5mR3lgoZZNIoMGgG0WXs2AwyaWSUipEE/m4jpN2R9cxWIju0EWhgAlkaKm2MKUxjzot8MOOcOrH5yTDe2xub7BAdSG+6lkAPbMEuEktt6jIPsNLFnBdVWNPalOVOEE5Gnc0WwjDMTlAQY5/AzMiiN7KUsaJqGJ1lCEHB2tJkgoCgsTY5Amw2WpvIB/Vfm9xLtK7Wag9YWDO5TagR1mZMMMgwUTKw1Pb+wxNBE8BkLBZ2ZyVOeQFjjOVr4ESuxR4CWqDl1xL1wWKxHrV/+bVEB2Ixs8cZieWLQvxkc+px8XwcAc6JWpxIQ9u/3DaCGSstFhxy8CbLb1T1WL2wpCzwDvHmv0UfjttfHh4eHh4eHh4eHh4e/2f8A+u5L3xKDUsWAAAAAElFTkSuQmCC">
-            <div class="dropdown" id="dropdown">
-                <div class="dropdown-item" onclick="showView('profile')"><i class="fas fa-user"></i> Ver Perfil</div>
-                <div class="dropdown-item" onclick="showView('friends')"><i class="fas fa-users"></i> Amigos</div>
-                <div class="dropdown-item" onclick="showView('config')"><i class="fas fa-cog"></i> Configurações</div>
-                <div class="dropdown-item" style="color:var(--danger)" onclick="logout()"><i class="fas fa-sign-out"></i> Sair</div>
+            <b id="nav-user-txt">Usuário</b>
+            <img class="avatar-circle" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJgAAACUCAMAAABY3hBoAAAAY1BMVEX///8AAABERET5+fny8vL29va3t7cXFxdVVVXPz8/Y2Njh4eHMzMzu7u7S0tJfX1+Li4sgICCtra1paWlPT0/BwcGjo6OXl5eEhIQSEhIsLCw+Pj4yMjJaWlpxcXE5OTl8fHwMOrCfAAAE40lEQVR4nO1b6baCOAy+yKJSUFYVV97/KWe8zk1SQGlpU8+c0++v0HylaXZ/fjw8PDw8PDw8PDw8PDwsIxZpcqz3TbOviyoV0bf5vJAnxT6QcCuS/Nusoqzuggl0dfbV75Zspli90FThl1iF7fU9rSfOyVeoifozrSfq1D2valK3Rjg4phWelGj9iz52ySu+qPIKgqvD6ylWE/Jv976/7x/jXx7CFa9oLUvuVqcsin9vYBhHWbEa/B44MrfR4HudsuET20J+YuWGWSN9rdOk0LyQLu3KBa8jlXjbvXsslRzokZ9XS+UVH2xBKO0g4eYVlurSEnrk3OaMqPW6nXu4Jbs48fJKiSWY5SWde/dWG63gjpKUvGCFz9ecvATKuau90eMbnA6AiFFU5rjT3coSCPSEleo7eDWvfJ8MhWyUb394c2DL9ktk4M3ccPEKUcN0XkMt40oBUpCg5frQNY3CEEtYKGELrxVMxCAt0ouvcoiT9jy8QhCgacTBXTQ8SpZfFh4JqABT9J+e/wRoJovgMEseR76DIEbTUoIlW29ZiGUQ8mheezAzax57gcQ0T0QwE9vCUSqEiNKLzMRQx5RDixfA95c8OiagHKaZjIG5OPNUpTAD1wz5ILzkysihrqkejT0RQrTEZPlx56XWkaBh5gquMYDVsrAYKWpeGmXkIEGrSIJFGLagH3MRDS3G7ZRcvEikqKEtmPLxlXwyCN/V1V+A6rNF1j80TVLOeDB7uzG2I0gpQvFikrIK1538BdaV1GKrlLzAyYt+sofKyZA6Mm+PJCSV1ctsZyEmvG7MJUVMeuddHylbBAFPxENAS/ifw5iUdg2ZK50/NIl7mrMPNy2hZeSHgxZELrcW3hzRTmpTsFYTAYkksrtPnKfo5XYSe5V/ilkQXA8pOakorYZNQ1bTSnEcCA66pi+qdrdrq6LfDHtvLvo1f2iHsj/B0Tm+kKh1xJ2e4wv5h4kLio3zmZVhO3UaF9e8RDVP6oWDs474E9V5ntEfyoOzeZV2ZBBm4GaUJlIYnRli70DVqvefa/3+p457lCYcGf1fsXWRtG223WZtmxT1JL8Ta6AoxoMozX08XhclfTN6kLH5Jod+v+jbN/F11I7Gkkq2vHLoIVefZ+rCamiDmbzmgNe5mk1GouTqgJnMqzyq2aZDyc1M5qU+4yfu0ouaBe950LQt6LRCv4MUIlnu2uTUTqw1F0/pcZ6tWo2YuqGN9tKCZr56leUZUHvfLPB7EWVmsc+bUbVf5I9jegWsXYCQ+JfHwhlNWl+Zr8YoghzkarHq5mR3lgoZZNIoMGgG0WXs2AwyaWSUipEE/m4jpN2R9cxWIju0EWhgAlkaKm2MKUxjzot8MOOcOrH5yTDe2xub7BAdSG+6lkAPbMEuEktt6jIPsNLFnBdVWNPalOVOEE5Gnc0WwjDMTlAQY5/AzMiiN7KUsaJqGJ1lCEHB2tJkgoCgsTY5Amw2WpvIB/Vfm9xLtK7Wag9YWDO5TagR1mZMMMgwUTKw1Pb+wxNBE8BkLBZ2ZyVOeQFjjOVr4ESuxR4CWqDl1xL1wWKxHrV/+bVEB2Ixs8cZieWLQvxkc+px8XwcAc6JWpxIQ9u/3DaCGSstFhxy8CbLb1T1WL2wpCzwDvHmv0UfjttfHh4eHh4eHh4eHh4e/2f8A+u5L3xKDUsWAAAAAElFTkSuQmCC">
+            <div class="dropdown" id="dropdown-menu">
+                <div class="dropdown-item" onclick="showView('profile')">Ver Perfil</div>
+                <div class="dropdown-item" onclick="showView('friends')">Amigos e Pedidos</div>
+                <div class="dropdown-item" onclick="showView('config')">Configurações</div>
+                <div class="dropdown-item" style="color:var(--danger)" onclick="logout()">Sair</div>
             </div>
         </div>
     </header>
@@ -100,230 +103,213 @@
         <div id="view-home" class="view active">
             <div class="grid-2">
                 <section>
-                    <h1 id="greet-msg">Olá, <span>Silva</span></h1>
+                    <h1>Dashboard</h1>
                     <div class="card" style="background:var(--primary); color:white">
-                        <p>Total Geral em Metas</p>
-                        <h2 id="global-balance" style="font-size: 2.5rem;">R$ 0,00</h2>
-                    </div>
-                    <div class="card">
-                        <h3><i class="fas fa-bullseye"></i> Criar Nova Meta</h3>
-                        <input type="text" id="m-name" class="form-input" placeholder="Nome da Meta (Ex: Carro 2028)">
-                        <input type="number" id="m-target" class="form-input" placeholder="Valor Objetivo (R$)">
-                        <input type="text" id="m-img" class="form-input" placeholder="URL da Imagem">
-                        <button class="btn btn-primary" onclick="createGoal()">Criar Meta</button>
+                        <p>Balanço em Metas</p>
+                        <h2 id="home-bal">R$ 0,00</h2>
                     </div>
                 </section>
                 <section>
-                    <h3>Suas Metas Ativas</h3>
-                    <div id="goals-container"></div>
+                    <div class="card">
+                        <h3>Criar Meta</h3>
+                        <input type="text" id="m-name" class="form-input" placeholder="Meta">
+                        <input type="number" id="m-val" class="form-input" placeholder="Valor Alvo">
+                        <button class="btn btn-primary" onclick="addGoal()">Criar</button>
+                    </div>
                 </section>
             </div>
         </div>
 
         <div id="view-profile" class="view">
-            <div class="card profile-info-card">
-                <div class="profile-banner" onclick="changeBanner()">
-                    <img id="p-banner-img" src="https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=800&q=80">
-                </div>
+            <div class="card" style="text-align:center">
+                <div class="profile-banner" onclick="changeBanner()" id="p-banner"></div>
                 <img class="avatar-large" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJgAAACUCAMAAABY3hBoAAAAY1BMVEX///8AAABERET5+fny8vL29va3t7cXFxdVVVXPz8/Y2Njh4eHMzMzu7u7S0tJfX1+Li4sgICCtra1paWlPT0/BwcGjo6OXl5eEhIQSEhIsLCw+Pj4yMjJaWlpxcXE5OTl8fHwMOrCfAAAE40lEQVR4nO1b6baCOAy+yKJSUFYVV97/KWe8zk1SQGlpU8+c0++v0HylaXZ/fjw8PDw8PDw8PDw8PDwsIxZpcqz3TbOviyoV0bf5vJAnxT6QcCuS/Nusoqzuggl0dfbV75Zspli90FThl1iF7fU9rSfOyVeoifozrSfq1D2valK3Rjg4phWelGj9iz52ySu+qPIKgqvD6ylWE/Jv976/7x/jXx7CFa9oLUvuVqcsin9vYBhHWbEa/B44MrfR4HudsuET20J+YuWGWSN9rdOk0LyQLu3KBa8jlXjbvXsslRzokZ9XS+UVH2xBKO0g4eYVlurSEnrk3OaMqPW6nXu4Jbs48fJKiSWY5SWde/dWG63gjpKUvGCFz9ecvATKuau90eMbnA6AiFFU5rjT3coSCPSEleo7eDWvfJ8MhWyUb394c2DL9ktk4M3ccPEKUcN0XkMt40oBUpCg5frQNY3CEEtYKGELrxVMxCAt0ouvcoiT9jy8QhCgacTBXTQ8SpZfFh4JqABT9J+e/wRoJovgMEseR76DIEbTUoIlW29ZiGUQ8mheezAzax57gcQ0T0QwE9vCUSqEiNKLzMRQx5RDixfA95c8OiagHKaZjIG5OPNUpTAD1wz5ILzkysihrqkejT0RQrTEZPlx56XWkaBh5gquMYDVsrAYKWpeGmXkIEGrSIJFGLagH3MRDS3G7ZRcvEikqKEtmPLxlXwyCN/V1V+A6rNF1j80TVLOeDB7uzG2I0gpQvFikrIK1538BdaV1GKrlLzAyYt+sofKyZA6Mm+PJCSV1ctsZyEmvG7MJUVMeuddHylbBAFPxENAS/ifw5iUdg2ZK50/NIl7mrMPNy2hZeSHgxZELrcW3hzRTmpTsFYTAYkksrtPnKfo5XYSe5V/ilkQXA8pOakorYZNQ1bTSnEcCA66pi+qdrdrq6LfDHtvLvo1f2iHsj/B0Tm+kKh1xJ2e4wv5h4kLio3zmZVhO3UaF9e8RDVP6oWDs474E9V5ntEfyoOzeZV2ZBBm4GaUJlIYnRli70DVqvefa/3+p457lCYcGf1fsXWRtG223WZtmxT1JL8Ta6AoxoMozX08XhclfTN6kLH5Jod+v+jbN/F11I7Gkkq2vHLoIVefZ+rCamiDmbzmgNe5mk1GouTqgJnMqzyq2aZDyc1M5qU+4yfu0ouaBe950LQt6LRCv4MUIlnu2uTUTqw1F0/pcZ6tWo2YuqGN9tKCZr56leUZUHvfLPB7EWVmsc+bUbVf5I9jegWsXYCQ+JfHwhlNWl+Zr8YoghzkarHq5mR3lgoZZNIoMGgG0WXs2AwyaWSUipEE/m4jpN2R9cxWIju0EWhgAlkaKm2MKUxjzot8MOOcOrH5yTDe2xub7BAdSG+6lkAPbMEuEktt6jIPsNLFnBdVWNPalOVOEE5Gnc0WwjDMTlAQY5/AzMiiN7KUsaJqGJ1lCEHB2tJkgoCgsTY5Amw2WpvIB/Vfm9xLtK7Wag9YWDO5TagR1mZMMMgwUTKw1Pb+wxNBE8BkLBZ2ZyVOeQFjjOVr4ESuxR4CWqDl1xL1wWKxHrV/+bVEB2Ixs8cZieWLQvxkc+px8XwcAc6JWpxIQ9u/3DaCGSstFhxy8CbLb1T1WL2wpCzwDvHmv0UfjttfHh4eHh4eHh4eHh4e/2f8A+u5L3xKDUsWAAAAAElFTkSuQmCC">
-                <h2 id="p-full-name">Nome Completo</h2>
-                <p id="p-username">@user</p>
-                <div style="margin:15px 0" id="p-status">Status: Comum</div>
-                <textarea id="p-bio" class="form-input" placeholder="Sua biografia..."></textarea>
-                <button class="btn btn-primary" onclick="saveBio()">Salvar Bio</button>
+                <h2 id="p-name">Nome</h2>
+                <div id="p-tag" style="margin:10px 0; color:var(--primary); font-weight:800">Status: ...</div>
+                <textarea id="p-bio" class="form-input" placeholder="Sua Bio..."></textarea>
+                <button class="btn btn-primary" onclick="saveProfile()">Salvar Dados</button>
             </div>
         </div>
 
         <div id="view-friends" class="view">
             <div class="card">
-                <h3>Adicionar Amigos</h3>
-                <input type="text" id="friend-user" class="form-input" placeholder="Username do amigo">
-                <button class="btn btn-primary" onclick="addFriend()">Pedir Amizade</button>
-                <div id="friends-list" style="margin-top:20px"></div>
+                <h3>Pedidos de Amizade</h3>
+                <div id="friend-requests">Nenhum pedido pendente.</div>
             </div>
-        </div>
-
-        <div id="view-config" class="view">
             <div class="card">
-                <h3>Customização</h3>
-                <p>Mudar Cor Principal:</p>
-                <input type="color" id="color-picker" onchange="changeColor(this.value)">
-                <button class="btn btn-primary" style="margin-top:20px" onclick="clearAll()">Resetar Tudo</button>
+                <h3>Buscar Amigo</h3>
+                <input type="text" id="find-user" class="form-input" placeholder="Username">
+                <button class="btn btn-primary" onclick="sendFriendRequest()">Enviar Pedido</button>
             </div>
         </div>
     </main>
 
-    <footer>
-        <p>&copy; 2025 ControlPrice Enterprise</p>
-        <div style="margin-top:15px">
-            <a href="https://portfoliosilva.github.io/portfoliosilva/">Portfolio</a> | 
-            <a href="https://linktr.ee/silva777only">Linktree</a> | 
-            <a href="https://wikiclarastack.github.io/wikiclarastack/">Wiki Clara Stack</a>
+    <div id="chat-widget">
+        <div id="chat-box">
+            <div class="chat-header">DM - Chat Geral</div>
+            <div class="chat-msgs" id="chat-content"></div>
+            <div class="chat-input">
+                <input type="text" id="chat-in" placeholder="Diga algo...">
+                <button onclick="sendChat()" style="padding:10px; background:var(--primary); color:white; border:none">></button>
+            </div>
         </div>
+        <button id="chat-btn" onclick="toggleChat()"><i class="fas fa-comment"></i></button>
+    </div>
+
+    <footer>
+        <p>Outros trabalhos do desenvolvedor: <a href="https://wikiclarastack.github.io/wikiclarastack/">Wiki Clara Stack</a></p>
     </footer>
 
     <script>
-        const WEBHOOK = "https://discord.com/api/webhooks/1454574312878243932/t2mqTqD0e-z_ifhATM_XgKkkimvNooM8QR9ZqvdGSTiW271g3e-TslVKITz2mFw9zkAC";
-        let currentUser = null;
+        let me = null;
         let authMode = 'reg';
 
-        // --- AUTH SYSTEM ---
+        function notify(msg) {
+            const c = document.getElementById('notification-container');
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.innerText = msg;
+            c.appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+        }
+
         function toggleAuth() {
             authMode = authMode === 'reg' ? 'log' : 'reg';
-            document.getElementById('reg-fields').style.display = authMode === 'reg' ? 'block' : 'none';
+            document.getElementById('reg-box').style.display = authMode === 'reg' ? 'block' : 'none';
             document.getElementById('auth-btn').innerText = authMode === 'reg' ? 'Cadastrar' : 'Entrar';
         }
 
         function handleAuth() {
-            const name = document.getElementById('in-full-name').value;
             const user = document.getElementById('in-user').value;
             const pass = document.getElementById('in-pass').value;
-
-            let users = JSON.parse(localStorage.getItem('cp_users')) || [];
+            let users = JSON.parse(localStorage.getItem('cp_users_v2')) || [];
 
             if(authMode === 'reg') {
-                if(users.find(u => u.user === user)) return alert("Este usuário já existe!");
-                const newUser = { name, user, pass, bio: '', banner: '', color: '#4f46e5', goals: [], friends: [] };
+                if(users.find(u => u.user === user)) return notify("Usuário já existe!");
+                const newUser = {
+                    user, pass, name: document.getElementById('in-full-name').value,
+                    bio: '', banner: '', color: '#4f46e5', goals: [], 
+                    friends: [], requests: []
+                };
                 users.push(newUser);
-                localStorage.setItem('cp_users', JSON.stringify(users));
-                alert("Cadastrado! Faça login.");
-                toggleAuth();
+                localStorage.setItem('cp_users_v2', JSON.stringify(users));
+                notify("Sucesso! Logue agora."); toggleAuth();
             } else {
                 const found = users.find(u => u.user === user && u.pass === pass);
                 if(found) {
-                    currentUser = found;
-                    localStorage.setItem('cp_session', user);
-                    init();
-                } else alert("Erro nos dados!");
+                    me = found; localStorage.setItem('cp_sess', user); init();
+                    notify("Bem-vindo, " + me.user);
+                } else notify("Dados incorretos!");
             }
         }
 
-        // --- APP ENGINE ---
         function init() {
             document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('nav-user').innerText = currentUser.user;
-            document.getElementById('greet-msg').innerHTML = `Olá, <span>${currentUser.name.split(' ')[0]}</span>`;
-            document.getElementById('p-full-name').innerText = currentUser.name;
-            document.getElementById('p-username').innerText = '@' + currentUser.user;
-            document.getElementById('p-bio').value = currentUser.bio;
-            document.getElementById('p-banner-img').src = currentUser.banner || document.getElementById('p-banner-img').src;
-            
-            // Admin Check
-            const statusEl = document.getElementById('p-status');
-            if(currentUser.user.toLowerCase() === 'silva777') {
-                statusEl.innerHTML = 'Status: <b style="color:var(--primary)">Administrador</b>';
-            } else {
-                statusEl.innerText = 'Status: Comum';
-            }
-
-            changeColor(currentUser.color, false);
-            renderGoals();
-            renderFriends();
+            document.getElementById('nav-user-txt').innerText = me.user;
+            document.getElementById('p-name').innerText = me.name;
+            document.getElementById('p-tag').innerText = me.user.toLowerCase() === 'silva777' ? "ADMINISTRADOR" : "USUÁRIO";
+            document.getElementById('p-bio').value = me.bio;
+            document.getElementById('p-banner').style.background = me.banner || 'var(--primary)';
+            document.documentElement.style.setProperty('--primary', me.color);
+            renderGoals(); renderFriends(); renderChat();
         }
 
         function showView(v) {
-            document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
+            document.querySelectorAll('.view').forEach(e => e.classList.remove('active'));
             document.getElementById('view-' + v).classList.add('active');
-            document.getElementById('dropdown').classList.remove('active');
+            document.getElementById('dropdown-menu').classList.remove('active');
         }
 
-        function toggleDropdown(e) {
-            e.stopPropagation();
-            document.getElementById('dropdown').classList.toggle('active');
-        }
-
-        // --- GOALS SYSTEM ---
-        function createGoal() {
+        function addGoal() {
             const name = document.getElementById('m-name').value;
-            const target = parseFloat(document.getElementById('m-target').value);
-            const img = document.getElementById('m-img').value || 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=200';
-
-            if(!name || !target) return alert("Preencha os dados!");
-
-            const goal = { id: Date.now(), name, target, current: 0, img };
-            currentUser.goals.push(goal);
-            updateUser();
-            renderGoals();
-            sendDiscord(`🎯 **Meta Criada**\n👤: ${currentUser.user}\n🏆: ${name}\n💰: R$ ${target}`);
-        }
-
-        function addValueToGoal(id) {
-            const val = parseFloat(prompt("Quanto deseja adicionar?"));
-            if(!val) return;
-            const goal = currentUser.goals.find(g => g.id === id);
-            goal.current += val;
-            updateUser();
-            renderGoals();
-            sendDiscord(`➕ **Valor em Meta**\n👤: ${currentUser.user}\n🎯: ${goal.name}\n💵: + R$ ${val}`);
+            const target = document.getElementById('m-val').value;
+            if(!name || !target) return notify("Campos vazios!");
+            me.goals.push({ name, target: parseFloat(target), current: 0 });
+            update(); renderGoals(); notify("Meta Criada!");
         }
 
         function renderGoals() {
-            const cont = document.getElementById('goals-container');
-            cont.innerHTML = currentUser.goals.map(g => {
-                const perc = Math.min((g.current / g.target) * 100, 100);
-                return `
-                    <div class="card goal-card">
-                        <img src="${g.img}" class="goal-img">
-                        <div style="flex:1">
-                            <b>${g.name}</b><br>
-                            <small>R$ ${g.current.toFixed(2)} / R$ ${g.target.toFixed(2)}</small>
-                            <div class="progress-bar"><div class="progress-fill" style="width:${perc}%"></div></div>
-                            <button class="btn btn-primary" style="margin-top:10px; padding:5px" onclick="addValueToGoal(${g.id})">+ Valor</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-            const total = currentUser.goals.reduce((a, b) => a + b.current, 0);
-            document.getElementById('global-balance').innerText = total.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+            let total = me.goals.reduce((a, b) => a + b.current, 0);
+            document.getElementById('home-bal').innerText = "R$ " + total.toFixed(2);
         }
 
-        // --- EXTRAS ---
-        function changeColor(c, save = true) {
-            document.documentElement.style.setProperty('--primary', c);
-            if(save) { currentUser.color = c; updateUser(); }
+        function sendFriendRequest() {
+            const target = document.getElementById('find-user').value;
+            if(target === me.user) return notify("Você não pode se adicionar!");
+            let users = JSON.parse(localStorage.getItem('cp_users_v2'));
+            let f = users.find(u => u.user === target);
+            if(!f) return notify("Usuário não encontrado!");
+            if(!f.requests) f.requests = [];
+            f.requests.push(me.user);
+            localStorage.setItem('cp_users_v2', JSON.stringify(users));
+            notify("Pedido enviado!");
         }
 
-        function saveBio() {
-            currentUser.bio = document.getElementById('p-bio').value;
-            updateUser();
-            alert("Bio salva!");
+        function renderFriends() {
+            const cont = document.getElementById('friend-requests');
+            if(!me.requests || me.requests.length === 0) {
+                cont.innerText = "Nenhum pedido."; return;
+            }
+            cont.innerHTML = me.requests.map(r => `
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px">
+                    <span>${r}</span>
+                    <button onclick="acceptFriend('${r}')" class="btn btn-primary" style="width:auto; padding:5px 10px">Aceitar</button>
+                </div>
+            `).join('');
+        }
+
+        function acceptFriend(u) {
+            me.friends.push(u);
+            me.requests = me.requests.filter(r => r !== u);
+            update(); renderFriends(); notify("Amigo Adicionado!");
+        }
+
+        function saveProfile() {
+            me.bio = document.getElementById('p-bio').value;
+            update(); notify("Perfil Salvo!");
         }
 
         function changeBanner() {
-            const url = prompt("URL da nova imagem de banner:");
-            if(url) {
-                currentUser.banner = url;
-                document.getElementById('p-banner-img').src = url;
-                updateUser();
-            }
+            const url = prompt("URL da Cor ou Imagem:");
+            if(url) { me.banner = `url(${url}) center/cover`; init(); update(); }
         }
 
-        function updateUser() {
-            let users = JSON.parse(localStorage.getItem('cp_users'));
-            const idx = users.findIndex(u => u.user === currentUser.user);
-            users[idx] = currentUser;
-            localStorage.setItem('cp_users', JSON.stringify(users));
+        function toggleChat() { document.getElementById('chat-box').classList.toggle('active'); }
+
+        function sendChat() {
+            const msg = document.getElementById('chat-in').value;
+            if(!msg) return;
+            let msgs = JSON.parse(localStorage.getItem('cp_chat')) || [];
+            msgs.push({ u: me.user, m: msg });
+            localStorage.setItem('cp_chat', JSON.stringify(msgs));
+            document.getElementById('chat-in').value = '';
+            renderChat();
         }
 
-        function logout() {
-            localStorage.removeItem('cp_session');
-            location.reload();
+        function renderChat() {
+            let msgs = JSON.parse(localStorage.getItem('cp_chat')) || [];
+            document.getElementById('chat-content').innerHTML = msgs.map(m => `<div><b>${m.u}:</b> ${m.m}</div>`).join('');
+            document.getElementById('chat-content').scrollTop = 9999;
         }
 
-        async function sendDiscord(m) {
-            fetch(WEBHOOK, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({content: m})});
+        function update() {
+            let users = JSON.parse(localStorage.getItem('cp_users_v2'));
+            const i = users.findIndex(u => u.user === me.user);
+            users[i] = me;
+            localStorage.setItem('cp_users_v2', JSON.stringify(users));
         }
 
-        // Auto-login
-        const session = localStorage.getItem('cp_session');
-        if(session) {
-            const users = JSON.parse(localStorage.getItem('cp_users'));
-            currentUser = users.find(u => u.user === session);
-            if(currentUser) init();
-        }
+        function logout() { localStorage.removeItem('cp_sess'); location.reload(); }
+        function toggleDropdown(e) { e.stopPropagation(); document.getElementById('dropdown-menu').classList.toggle('active'); }
+        window.onclick = () => document.getElementById('dropdown-menu').classList.remove('active');
 
-        window.onclick = () => document.getElementById('dropdown').classList.remove('active');
+        // Auto Login
+        const s = localStorage.getItem('cp_sess');
+        if(s) {
+            let users = JSON.parse(localStorage.getItem('cp_users_v2'));
+            me = users.find(u => u.user === s);
+            if(me) init();
+        }
     </script>
 </body>
 </html>
