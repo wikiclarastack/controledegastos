@@ -5,309 +5,423 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ControlPrice | Enterprise</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #4f46e5;
-            --success: #10b981;
-            --danger: #ef4444;
-            --text-main: #111827;
-            --text-sub: #6b7280;
-            --bg: #f3f4f6;
-            --white: #ffffff;
-        }
-
+        :root { --primary: #4f46e5; --success: #10b981; --danger: #ef4444; --bg: #f3f4f6; --white: #ffffff; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; transition: 0.3s; }
+        body { background: var(--bg); color: #111827; overflow-x: hidden; }
 
-        /* --- Notificações Personalizadas --- */
-        #notification-container { position: fixed; top: 20px; right: 20px; z-index: 3000; }
-        .toast { background: var(--white); border-left: 5px solid var(--primary); padding: 15px 25px; border-radius: 8px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); margin-bottom: 10px; animation: slideIn 0.3s ease-out; }
+        /* Notificações */
+        #notif-container { position: fixed; top: 15px; right: 15px; z-index: 9999; width: 280px; }
+        .toast { background: white; border-left: 5px solid var(--primary); padding: 12px; margin-bottom: 8px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); animation: slideIn 0.3s forwards; }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
 
-        /* --- Auth --- */
-        .auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: flex; align-items: center; justify-content: center; }
-        .auth-card { background: var(--white); padding: 2.5rem; border-radius: 24px; box-shadow: 0 20px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
-        .auth-card input, .form-input { width: 100%; padding: 12px; margin-bottom: 1rem; border: 1px solid #e5e7eb; border-radius: 12px; outline: none; }
-        .btn { width: 100%; padding: 12px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .btn-primary { background: var(--primary); color: white; }
+        /* Header e Nav */
+        header { background: white; padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 1000; }
+        .nav-right { display: flex; align-items: center; gap: 15px; }
+        .user-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); cursor: pointer; }
 
-        /* --- Header --- */
-        header { background: var(--white); padding: 0.8rem 10%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 100; }
-        .user-nav { display: flex; align-items: center; gap: 15px; cursor: pointer; position: relative; }
-        .avatar-circle { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
-        .dropdown { position: absolute; top: 110%; right: 0; background: white; width: 220px; border-radius: 12px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); display: none; overflow: hidden; }
-        .dropdown.active { display: block; }
-        .dropdown-item { padding: 12px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .dropdown-item:hover { background: #f3f4f6; }
-
-        /* --- App Engine --- */
-        main { padding: 2rem 10%; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; }
-        .view { display: none; animation: fadeIn 0.4s ease; }
+        /* Layout */
+        main { padding: 20px 5%; max-width: 1200px; margin: 0 auto; }
+        .view { display: none; }
         .view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
 
-        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .grid-2 { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .grid-2 { display: flex; flex-direction: column; }
+            header { padding: 10px 15px; }
+            .logo { font-size: 1.1rem; }
+        }
 
-        /* --- Profile --- */
-        .profile-banner { height: 120px; background: var(--primary); border-radius: 20px 20px 0 0; cursor: pointer; }
-        .avatar-large { width: 90px; height: 90px; border-radius: 50%; border: 4px solid white; margin-top: -45px; margin-left: auto; margin-right: auto; display: block; background: white; }
+        /* Metas Kiwify Style */
+        .goal-item { display: flex; align-items: center; gap: 15px; padding: 15px; border: 1px solid #eee; border-radius: 12px; margin-bottom: 10px; }
+        .goal-img { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; }
+        .counter-val { font-size: 1.4rem; font-weight: 800; color: var(--success); }
 
-        /* --- Chat Flutuante --- */
-        #chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
-        #chat-btn { width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: none; font-size: 1.5rem; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        #chat-box { width: 300px; height: 400px; background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: absolute; bottom: 70px; right: 0; display: none; flex-direction: column; overflow: hidden; }
-        #chat-box.active { display: flex; }
-        .chat-header { background: var(--primary); color: white; padding: 15px; font-weight: bold; }
-        .chat-msgs { flex: 1; padding: 15px; overflow-y: auto; font-size: 0.9rem; }
-        .chat-input { display: flex; border-top: 1px solid #eee; }
-        .chat-input input { flex: 1; padding: 10px; border: none; outline: none; }
+        /* Chat DM */
+        #chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 2000; }
+        #chat-window { width: 320px; height: 450px; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: none; flex-direction: column; overflow: hidden; }
+        #chat-window.active { display: flex; }
+        .chat-header { background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; }
+        .chat-msgs { flex: 1; padding: 10px; overflow-y: auto; background: #f9f9f9; }
+        .msg { margin-bottom: 8px; padding: 8px 12px; border-radius: 10px; max-width: 80%; }
+        .msg.me { background: var(--primary); color: white; margin-left: auto; }
+        .msg.other { background: #eee; }
 
-        footer { padding: 2rem; text-align: center; border-top: 1px solid #eee; background: white; }
-        .hidden { display: none; }
+        /* Dropdown */
+        .dropdown { position: absolute; top: 50px; right: 5%; background: white; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); width: 200px; display: none; overflow: hidden; }
+        .dropdown.active { display: block; }
+        .dropdown div { padding: 12px; cursor: pointer; font-size: 0.9rem; }
+        .dropdown div:hover { background: #f5f5f5; }
+
+        /* Admin Tag */
+        .admin-tag { background: #000; color: gold; padding: 2px 8px; border-radius: 5px; font-size: 0.7rem; font-weight: bold; }
+        
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 10px; outline: none; }
+        .btn { border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
+        .btn-primary { background: var(--primary); color: white; }
     </style>
 </head>
 <body>
 
-    <div id="notification-container"></div>
+    <div id="notif-container"></div>
 
-    <div id="auth-screen" class="auth-overlay">
-        <div class="auth-card">
-            <h2>ControlPrice</h2>
-            <div id="reg-box">
-                <input type="text" id="in-full-name" placeholder="Nome Completo">
+    <div id="auth-screen" style="position:fixed; inset:0; background:var(--bg); z-index:5000; display:flex; align-items:center; justify-content:center; padding:20px">
+        <div class="card" style="width:100%; max-width:400px; text-align:center">
+            <h2 style="color:var(--primary); margin-bottom:20px">ControlPrice</h2>
+            <div id="reg-fields">
+                <input type="text" id="in-name" placeholder="Nome Completo">
             </div>
             <input type="text" id="in-user" placeholder="Usuário">
             <input type="password" id="in-pass" placeholder="Senha">
-            <button class="btn btn-primary" onclick="handleAuth()" id="auth-btn">Cadastrar</button>
-            <p onclick="toggleAuth()" style="color:var(--primary); font-size:0.8rem; margin-top:15px; cursor:pointer">Entrar / Cadastrar</p>
+            <button class="btn btn-primary" onclick="handleAuth()" id="btn-auth">Cadastrar</button>
+            <p onclick="toggleAuth()" style="margin-top:15px; font-size:0.8rem; cursor:pointer">Trocar para Login/Cadastro</p>
         </div>
     </div>
 
     <header>
-        <div class="logo" onclick="showView('home')">Control<span>Price</span></div>
-        <div class="user-nav" onclick="toggleDropdown(event)">
-            <b id="nav-user-txt">Usuário</b>
-            <img class="avatar-circle" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJgAAACUCAMAAABY3hBoAAAAY1BMVEX///8AAABERET5+fny8vL29va3t7cXFxdVVVXPz8/Y2Njh4eHMzMzu7u7S0tJfX1+Li4sgICCtra1paWlPT0/BwcGjo6OXl5eEhIQSEhIsLCw+Pj4yMjJaWlpxcXE5OTl8fHwMOrCfAAAE40lEQVR4nO1b6baCOAy+yKJSUFYVV97/KWe8zk1SQGlpU8+c0++v0HylaXZ/fjw8PDw8PDw8PDw8PDwsIxZpcqz3TbOviyoV0bf5vJAnxT6QcCuS/Nusoqzuggl0dfbV75Zspli90FThl1iF7fU9rSfOyVeoifozrSfq1D2valK3Rjg4phWelGj9iz52ySu+qPIKgqvD6ylWE/Jv976/7x/jXx7CFa9oLUvuVqcsin9vYBhHWbEa/B44MrfR4HudsuET20J+YuWGWSN9rdOk0LyQLu3KBa8jlXjbvXsslRzokZ9XS+UVH2xBKO0g4eYVlurSEnrk3OaMqPW6nXu4Jbs48fJKiSWY5SWde/dWG63gjpKUvGCFz9ecvATKuau90eMbnA6AiFFU5rjT3coSCPSEleo7eDWvfJ8MhWyUb394c2DL9ktk4M3ccPEKUcN0XkMt40oBUpCg5frQNY3CEEtYKGELrxVMxCAt0ouvcoiT9jy8QhCgacTBXTQ8SpZfFh4JqABT9J+e/wRoJovgMEseR76DIEbTUoIlW29ZiGUQ8mheezAzax57gcQ0T0QwE9vCUSqEiNKLzMRQx5RDixfA95c8OiagHKaZjIG5OPNUpTAD1wz5ILzkysihrqkejT0RQrTEZPlx56XWkaBh5gquMYDVsrAYKWpeGmXkIEGrSIJFGLagH3MRDS3G7ZRcvEikqKEtmPLxlXwyCN/V1V+A6rNF1j80TVLOeDB7uzG2I0gpQvFikrIK1538BdaV1GKrlLzAyYt+sofKyZA6Mm+PJCSV1ctsZyEmvG7MJUVMeuddHylbBAFPxENAS/ifw5iUdg2ZK50/NIl7mrMPNy2hZeSHgxZELrcW3hzRTmpTsFYTAYkksrtPnKfo5XYSe5V/ilkQXA8pOakorYZNQ1bTSnEcCA66pi+qdrdrq6LfDHtvLvo1f2iHsj/B0Tm+kKh1xJ2e4wv5h4kLio3zmZVhO3UaF9e8RDVP6oWDs474E9V5ntEfyoOzeZV2ZBBm4GaUJlIYnRli70DVqvefa/3+p457lCYcGf1fsXWRtG223WZtmxT1JL8Ta6AoxoMozX08XhclfTN6kLH5Jod+v+jbN/F11I7Gkkq2vHLoIVefZ+rCamiDmbzmgNe5mk1GouTqgJnMqzyq2aZDyc1M5qU+4yfu0ouaBe950LQt6LRCv4MUIlnu2uTUTqw1F0/pcZ6tWo2YuqGN9tKCZr56leUZUHvfLPB7EWVmsc+bUbVf5I9jegWsXYCQ+JfHwhlNWl+Zr8YoghzkarHq5mR3lgoZZNIoMGgG0WXs2AwyaWSUipEE/m4jpN2R9cxWIju0EWhgAlkaKm2MKUxjzot8MOOcOrH5yTDe2xub7BAdSG+6lkAPbMEuEktt6jIPsNLFnBdVWNPalOVOEE5Gnc0WwjDMTlAQY5/AzMiiN7KUsaJqGJ1lCEHB2tJkgoCgsTY5Amw2WpvIB/Vfm9xLtK7Wag9YWDO5TagR1mZMMMgwUTKw1Pb+wxNBE8BkLBZ2ZyVOeQFjjOVr4ESuxR4CWqDl1xL1wWKxHrV/+bVEB2Ixs8cZieWLQvxkc+px8XwcAc6JWpxIQ9u/3DaCGSstFhxy8CbLb1T1WL2wpCzwDvHmv0UfjttfHh4eHh4eHh4eHh4e/2f8A+u5L3xKDUsWAAAAAElFTkSuQmCC">
-            <div class="dropdown" id="dropdown-menu">
-                <div class="dropdown-item" onclick="showView('profile')">Ver Perfil</div>
-                <div class="dropdown-item" onclick="showView('friends')">Amigos e Pedidos</div>
-                <div class="dropdown-item" onclick="showView('config')">Configurações</div>
-                <div class="dropdown-item" style="color:var(--danger)" onclick="logout()">Sair</div>
-            </div>
+        <div class="logo" style="font-weight:800" onclick="showView('home')">CONTROL<span>PRICE</span></div>
+        <div class="nav-right">
+            <span id="nav-user-name" style="font-weight:600; font-size:0.9rem"></span>
+            <img id="nav-avatar" class="user-avatar" onclick="document.getElementById('dd').classList.toggle('active')">
+        </div>
+        <div class="dropdown" id="dd">
+            <div onclick="showView('profile')"><i class="fas fa-user"></i> Ver Perfil</div>
+            <div onclick="showView('friends')"><i class="fas fa-users"></i> Amigos</div>
+            <div onclick="showView('config')"><i class="fas fa-cog"></i> Configurações</div>
+            <div id="admin-btn" style="display:none; color:gold; background:#000" onclick="showView('admin')"><i class="fas fa-crown"></i> Painel Admin</div>
+            <div onclick="logout()" style="color:var(--danger)"><i class="fas fa-sign-out-alt"></i> Sair</div>
         </div>
     </header>
 
     <main>
         <div id="view-home" class="view active">
-            <div class="grid-2">
-                <section>
-                    <h1>Dashboard</h1>
-                    <div class="card" style="background:var(--primary); color:white">
-                        <p>Balanço em Metas</p>
-                        <h2 id="home-bal">R$ 0,00</h2>
-                    </div>
-                </section>
-                <section>
-                    <div class="card">
-                        <h3>Criar Meta</h3>
-                        <input type="text" id="m-name" class="form-input" placeholder="Meta">
-                        <input type="number" id="m-val" class="form-input" placeholder="Valor Alvo">
-                        <button class="btn btn-primary" onclick="addGoal()">Criar</button>
-                    </div>
-                </section>
+            <div class="card" style="background:var(--primary); color:white">
+                <p>Seu Saldo Total em Metas</p>
+                <h1 id="total-balance" class="counter-val" style="color:white">R$ 0,00</h1>
             </div>
+
+            <div class="card">
+                <h3><i class="fas fa-plus"></i> Nova Meta Colaborativa</h3>
+                <input type="text" id="m-name" placeholder="Nome da Meta">
+                <input type="text" id="m-desc" placeholder="Descrição Curta">
+                <input type="number" id="m-target" placeholder="Valor Alvo (R$)">
+                <input type="text" id="m-img" placeholder="URL da Foto da Meta">
+                <input type="text" id="m-friend" placeholder="Adicionar Amigo (username)">
+                <button class="btn btn-primary" onclick="createGoal()">Criar Meta</button>
+            </div>
+
+            <div id="goals-list"></div>
         </div>
 
         <div id="view-profile" class="view">
-            <div class="card" style="text-align:center">
-                <div class="profile-banner" onclick="changeBanner()" id="p-banner"></div>
-                <img class="avatar-large" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJgAAACUCAMAAABY3hBoAAAAY1BMVEX///8AAABERET5+fny8vL29va3t7cXFxdVVVXPz8/Y2Njh4eHMzMzu7u7S0tJfX1+Li4sgICCtra1paWlPT0/BwcGjo6OXl5eEhIQSEhIsLCw+Pj4yMjJaWlpxcXE5OTl8fHwMOrCfAAAE40lEQVR4nO1b6baCOAy+yKJSUFYVV97/KWe8zk1SQGlpU8+c0++v0HylaXZ/fjw8PDw8PDw8PDw8PDwsIxZpcqz3TbOviyoV0bf5vJAnxT6QcCuS/Nusoqzuggl0dfbV75Zspli90FThl1iF7fU9rSfOyVeoifozrSfq1D2valK3Rjg4phWelGj9iz52ySu+qPIKgqvD6ylWE/Jv976/7x/jXx7CFa9oLUvuVqcsin9vYBhHWbEa/B44MrfR4HudsuET20J+YuWGWSN9rdOk0LyQLu3KBa8jlXjbvXsslRzokZ9XS+UVH2xBKO0g4eYVlurSEnrk3OaMqPW6nXu4Jbs48fJKiSWY5SWde/dWG63gjpKUvGCFz9ecvATKuau90eMbnA6AiFFU5rjT3coSCPSEleo7eDWvfJ8MhWyUb394c2DL9ktk4M3ccPEKUcN0XkMt40oBUpCg5frQNY3CEEtYKGELrxVMxCAt0ouvcoiT9jy8QhCgacTBXTQ8SpZfFh4JqABT9J+e/wRoJovgMEseR76DIEbTUoIlW29ZiGUQ8mheezAzax57gcQ0T0QwE9vCUSqEiNKLzMRQx5RDixfA95c8OiagHKaZjIG5OPNUpTAD1wz5ILzkysihrqkejT0RQrTEZPlx56XWkaBh5gquMYDVsrAYKWpeGmXkIEGrSIJFGLagH3MRDS3G7ZRcvEikqKEtmPLxlXwyCN/V1V+A6rNF1j80TVLOeDB7uzG2I0gpQvFikrIK1538BdaV1GKrlLzAyYt+sofKyZA6Mm+PJCSV1ctsZyEmvG7MJUVMeuddHylbBAFPxENAS/ifw5iUdg2ZK50/NIl7mrMPNy2hZeSHgxZELrcW3hzRTmpTsFYTAYkksrtPnKfo5XYSe5V/ilkQXA8pOakorYZNQ1bTSnEcCA66pi+qdrdrq6LfDHtvLvo1f2iHsj/B0Tm+kKh1xJ2e4wv5h4kLio3zmZVhO3UaF9e8RDVP6oWDs474E9V5ntEfyoOzeZV2ZBBm4GaUJlIYnRli70DVqvefa/3+p457lCYcGf1fsXWRtG223WZtmxT1JL8Ta6AoxoMozX08XhclfTN6kLH5Jod+v+jbN/F11I7Gkkq2vHLoIVefZ+rCamiDmbzmgNe5mk1GouTqgJnMqzyq2aZDyc1M5qU+4yfu0ouaBe950LQt6LRCv4MUIlnu2uTUTqw1F0/pcZ6tWo2YuqGN9tKCZr56leUZUHvfLPB7EWVmsc+bUbVf5I9jegWsXYCQ+JfHwhlNWl+Zr8YoghzkarHq5mR3lgoZZNIoMGgG0WXs2AwyaWSUipEE/m4jpN2R9cxWIju0EWhgAlkaKm2MKUxjzot8MOOcOrH5yTDe2xub7BAdSG+6lkAPbMEuEktt6jIPsNLFnBdVWNPalOVOEE5Gnc0WwjDMTlAQY5/AzMiiN7KUsaJqGJ1lCEHB2tJkgoCgsTY5Amw2WpvIB/Vfm9xLtK7Wag9YWDO5TagR1mZMMMgwUTKw1Pb+wxNBE8BkLBZ2ZyVOeQFjjOVr4ESuxR4CWqDl1xL1wWKxHrV/+bVEB2Ixs8cZieWLQvxkc+px8XwcAc6JWpxIQ9u/3DaCGSstFhxy8CbLb1T1WL2wpCzwDvHmv0UfjttfHh4eHh4eHh4eHh4e/2f8A+u5L3xKDUsWAAAAAElFTkSuQmCC">
-                <h2 id="p-name">Nome</h2>
-                <div id="p-tag" style="margin:10px 0; color:var(--primary); font-weight:800">Status: ...</div>
-                <textarea id="p-bio" class="form-input" placeholder="Sua Bio..."></textarea>
-                <button class="btn btn-primary" onclick="saveProfile()">Salvar Dados</button>
+            <div class="card" style="padding:0; overflow:hidden">
+                <div id="p-banner" style="height:120px; background:var(--primary); position:relative; cursor:pointer" onclick="updateField('banner')">
+                    <img id="p-banner-img" style="width:100%; height:100%; object-fit:cover">
+                </div>
+                <div style="text-align:center; margin-top:-40px; padding:20px">
+                    <img id="p-avatar" style="width:80px; height:80px; border-radius:50%; border:4px solid white; background:white; cursor:pointer" onclick="updateField('avatar')">
+                    <h2 id="p-name-disp">Nome</h2>
+                    <p id="p-user-disp" style="color:gray">@user</p>
+                    <div id="p-admin-tag"></div>
+                    <textarea id="p-bio" placeholder="Sua Bio" style="margin-top:15px"></textarea>
+                    <button class="btn btn-primary" onclick="saveBio()">Salvar Bio</button>
+                </div>
             </div>
         </div>
 
         <div id="view-friends" class="view">
             <div class="card">
-                <h3>Pedidos de Amizade</h3>
-                <div id="friend-requests">Nenhum pedido pendente.</div>
+                <h3>Buscar Amigos</h3>
+                <input type="text" id="f-search" placeholder="Username do amigo">
+                <button class="btn btn-primary" onclick="sendReq()">Enviar Pedido</button>
             </div>
             <div class="card">
-                <h3>Buscar Amigo</h3>
-                <input type="text" id="find-user" class="form-input" placeholder="Username">
-                <button class="btn btn-primary" onclick="sendFriendRequest()">Enviar Pedido</button>
+                <h3>Pedidos Pendentes</h3>
+                <div id="f-reqs"></div>
+            </div>
+        </div>
+
+        <div id="view-config" class="view">
+            <div class="card">
+                <h3>Segurança</h3>
+                <input type="password" id="new-pass" placeholder="Nova Senha">
+                <button class="btn btn-primary" onclick="changePass()">Alterar Senha</button>
+            </div>
+            <div class="card">
+                <h3>Links Úteis</h3>
+                <button class="btn" style="background:#eee; margin-bottom:5px" onclick="window.open('https://linktr.ee/silva777only')">Linktree Silva</button>
+                <button class="btn" style="background:#eee; margin-bottom:5px" onclick="window.open('https://portfoliosilva.github.io/portfoliosilva/')">Portfolio Silva</button>
+                <button class="btn" style="background:#eee" onclick="window.open('https://wikiclarastack.github.io/wikiclarastack/')">Wiki Clara Stack</button>
+            </div>
+        </div>
+
+        <div id="view-admin" class="view">
+            <div class="card">
+                <h2>Gerenciamento de Usuários</h2>
+                <div id="admin-user-list"></div>
             </div>
         </div>
     </main>
 
     <div id="chat-widget">
-        <div id="chat-box">
-            <div class="chat-header">DM - Chat Geral</div>
-            <div class="chat-msgs" id="chat-content"></div>
-            <div class="chat-input">
-                <input type="text" id="chat-in" placeholder="Diga algo...">
-                <button onclick="sendChat()" style="padding:10px; background:var(--primary); color:white; border:none">></button>
+        <div id="chat-window">
+            <div class="chat-header">
+                <span id="chat-with">Chat</span>
+                <i class="fas fa-times" onclick="toggleChat()"></i>
+            </div>
+            <div class="chat-msgs" id="chat-body"></div>
+            <div style="display:flex; padding:10px; border-top:1px solid #eee">
+                <input type="text" id="chat-input" placeholder="Mensagem..." style="margin:0; flex:1">
+                <button onclick="sendMsg()" style="background:var(--primary); color:white; border:none; padding:10px; border-radius:10px; margin-left:5px">></button>
             </div>
         </div>
-        <button id="chat-btn" onclick="toggleChat()"><i class="fas fa-comment"></i></button>
+        <button id="chat-open-btn" onclick="toggleChat()" style="width:60px; height:60px; border-radius:50%; background:var(--primary); color:white; border:none; box-shadow:0 5px 15px rgba(0,0,0,0.3); font-size:1.5rem">
+            <i class="fas fa-comments"></i>
+        </button>
     </div>
-
-    <footer>
-        <p>Outros trabalhos do desenvolvedor: <a href="https://wikiclarastack.github.io/wikiclarastack/">Wiki Clara Stack</a></p>
-    </footer>
 
     <script>
         let me = null;
         let authMode = 'reg';
+        let chatTarget = null;
 
-        function notify(msg) {
-            const c = document.getElementById('notification-container');
-            const t = document.createElement('div');
-            t.className = 'toast';
-            t.innerText = msg;
-            c.appendChild(t);
+        function notify(m) {
+            const t = document.createElement('div'); t.className = 'toast'; t.innerText = m;
+            document.getElementById('notif-container').appendChild(t);
             setTimeout(() => t.remove(), 3000);
         }
 
+        // --- AUTH ---
         function toggleAuth() {
             authMode = authMode === 'reg' ? 'log' : 'reg';
-            document.getElementById('reg-box').style.display = authMode === 'reg' ? 'block' : 'none';
-            document.getElementById('auth-btn').innerText = authMode === 'reg' ? 'Cadastrar' : 'Entrar';
+            document.getElementById('reg-fields').style.display = authMode === 'reg' ? 'block' : 'none';
+            document.getElementById('btn-auth').innerText = authMode === 'reg' ? 'Cadastrar' : 'Entrar';
         }
 
         function handleAuth() {
-            const user = document.getElementById('in-user').value;
-            const pass = document.getElementById('in-pass').value;
-            let users = JSON.parse(localStorage.getItem('cp_users_v2')) || [];
+            const u = document.getElementById('in-user').value.toLowerCase();
+            const p = document.getElementById('in-pass').value;
+            let users = JSON.parse(localStorage.getItem('cp_users_v3')) || [];
 
             if(authMode === 'reg') {
-                if(users.find(u => u.user === user)) return notify("Usuário já existe!");
-                const newUser = {
-                    user, pass, name: document.getElementById('in-full-name').value,
-                    bio: '', banner: '', color: '#4f46e5', goals: [], 
-                    friends: [], requests: []
-                };
-                users.push(newUser);
-                localStorage.setItem('cp_users_v2', JSON.stringify(users));
-                notify("Sucesso! Logue agora."); toggleAuth();
+                if(users.find(x => x.user === u)) return notify("Usuário já existe!");
+                const n = { user: u, pass: p, name: document.getElementById('in-name').value, bio:'', avatar:'https://cdn-icons-png.flaticon.com/512/149/149071.png', banner:'', goals:[], friends:[], requests:[] };
+                users.push(n);
+                localStorage.setItem('cp_users_v3', JSON.stringify(users));
+                notify("Cadastrado!"); toggleAuth();
             } else {
-                const found = users.find(u => u.user === user && u.pass === pass);
-                if(found) {
-                    me = found; localStorage.setItem('cp_sess', user); init();
-                    notify("Bem-vindo, " + me.user);
-                } else notify("Dados incorretos!");
+                const f = users.find(x => x.user === u && x.pass === p);
+                if(f) { me = f; localStorage.setItem('cp_sess', u); init(); } else notify("Erro!");
             }
         }
 
+        // --- CORE ---
         function init() {
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('nav-user-txt').innerText = me.user;
-            document.getElementById('p-name').innerText = me.name;
-            document.getElementById('p-tag').innerText = me.user.toLowerCase() === 'silva777' ? "ADMINISTRADOR" : "USUÁRIO";
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('nav-user-name').innerText = me.user;
+            document.getElementById('nav-avatar').src = me.avatar;
+            document.getElementById('p-name-disp').innerText = me.name;
+            document.getElementById('p-user-disp').innerText = '@'+me.user;
+            document.getElementById('p-avatar').src = me.avatar;
+            document.getElementById('p-banner-img').src = me.banner || 'https://images.unsplash.com/photo-1557683316-973673baf926?w=500';
             document.getElementById('p-bio').value = me.bio;
-            document.getElementById('p-banner').style.background = me.banner || 'var(--primary)';
-            document.documentElement.style.setProperty('--primary', me.color);
-            renderGoals(); renderFriends(); renderChat();
+
+            if(me.user === 'silva777') {
+                document.getElementById('admin-btn').style.display = 'block';
+                document.getElementById('p-admin-tag').innerHTML = '<span class="admin-tag">ADMINISTRADOR</span>';
+            }
+
+            renderGoals();
+            renderRequests();
+            renderAdmin();
         }
 
         function showView(v) {
-            document.querySelectorAll('.view').forEach(e => e.classList.remove('active'));
-            document.getElementById('view-' + v).classList.add('active');
-            document.getElementById('dropdown-menu').classList.remove('active');
+            document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
+            document.getElementById('view-'+v).classList.add('active');
+            document.getElementById('dd').classList.remove('active');
         }
 
-        function addGoal() {
+        // --- METAS KIWIFY STYLE ---
+        function createGoal() {
             const name = document.getElementById('m-name').value;
-            const target = document.getElementById('m-val').value;
-            if(!name || !target) return notify("Campos vazios!");
-            me.goals.push({ name, target: parseFloat(target), current: 0 });
+            const target = parseFloat(document.getElementById('m-target').value);
+            const friend = document.getElementById('m-friend').value.toLowerCase();
+            const img = document.getElementById('m-img').value || 'https://cdn-icons-png.flaticon.com/512/1611/1611154.png';
+
+            if(!name || !target) return notify("Preencha Nome e Valor!");
+            const g = { id: Date.now(), owner: me.user, name, desc: document.getElementById('m-desc').value, target, current: 0, img, collab: friend };
+            me.goals.push(g);
             update(); renderGoals(); notify("Meta Criada!");
         }
 
-        function renderGoals() {
-            let total = me.goals.reduce((a, b) => a + b.current, 0);
-            document.getElementById('home-bal').innerText = "R$ " + total.toFixed(2);
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            if(!obj) return;
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const currentVal = (progress * (end - start) + start).toFixed(2);
+                obj.innerText = "R$ " + parseFloat(currentVal).toLocaleString('pt-BR');
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
         }
 
-        function sendFriendRequest() {
-            const target = document.getElementById('find-user').value;
-            if(target === me.user) return notify("Você não pode se adicionar!");
-            let users = JSON.parse(localStorage.getItem('cp_users_v2'));
-            let f = users.find(u => u.user === target);
-            if(!f) return notify("Usuário não encontrado!");
-            if(!f.requests) f.requests = [];
+        function renderGoals() {
+            const list = document.getElementById('goals-list');
+            const users = JSON.parse(localStorage.getItem('cp_users_v3'));
+            
+            // Pega metas minhas + metas que sou collab
+            let allVisible = [];
+            users.forEach(u => {
+                u.goals.forEach(g => {
+                    if(g.owner === me.user || g.collab === me.user) allVisible.push(g);
+                });
+            });
+
+            list.innerHTML = allVisible.map(g => `
+                <div class="card goal-item">
+                    <img src="${g.img}" class="goal-img">
+                    <div style="flex:1">
+                        <b>${g.name}</b> <small>(${g.owner === me.user ? 'Dono' : 'Colaborador'})</small>
+                        <div id="anim-${g.id}" class="counter-val">R$ 0,00</div>
+                        <p style="font-size:0.7rem; color:gray">Alvo: R$ ${g.target}</p>
+                        ${g.owner === me.user ? `<button onclick="addVal(${g.id})" style="padding:5px; margin-top:5px" class="btn btn-primary">Adicionar R$</button>` : ''}
+                    </div>
+                </div>
+            `).join('');
+
+            allVisible.forEach(g => animateValue(`anim-${g.id}`, 0, g.current, 1000));
+            const total = allVisible.reduce((a, b) => a + b.current, 0);
+            animateValue('total-balance', 0, total, 1500);
+        }
+
+        function addVal(id) {
+            const v = parseFloat(prompt("Valor a adicionar:"));
+            if(!v) return;
+            const g = me.goals.find(x => x.id === id);
+            g.current += v;
+            update(); renderGoals();
+        }
+
+        // --- CHAT DM ---
+        function toggleChat() {
+            const win = document.getElementById('chat-window');
+            win.classList.toggle('active');
+            if(win.classList.contains('active')) {
+                const target = prompt("Com qual amigo deseja falar? (username)");
+                if(me.friends.includes(target)) {
+                    chatTarget = target;
+                    document.getElementById('chat-with').innerText = "DM: " + target;
+                    renderMsgs();
+                } else {
+                    notify("Você só pode falar com amigos!");
+                    win.classList.remove('active');
+                }
+            }
+        }
+
+        function sendMsg() {
+            const text = document.getElementById('chat-input').value;
+            if(!text) return;
+            let db = JSON.parse(localStorage.getItem('cp_msgs')) || [];
+            db.push({ from: me.user, to: chatTarget, msg: text, time: Date.now() });
+            localStorage.setItem('cp_msgs', JSON.stringify(db));
+            document.getElementById('chat-input').value = '';
+            renderMsgs();
+        }
+
+        function renderMsgs() {
+            const db = JSON.parse(localStorage.getItem('cp_msgs')) || [];
+            const filtered = db.filter(x => (x.from === me.user && x.to === chatTarget) || (x.from === chatTarget && x.to === me.user));
+            document.getElementById('chat-body').innerHTML = filtered.map(x => `
+                <div class="msg ${x.from === me.user ? 'me' : 'other'}">${x.msg}</div>
+            `).join('');
+            document.getElementById('chat-body').scrollTop = 9999;
+        }
+
+        // --- SISTEMA AMIGOS ---
+        function sendReq() {
+            const u = document.getElementById('f-search').value.toLowerCase();
+            let users = JSON.parse(localStorage.getItem('cp_users_v3'));
+            let f = users.find(x => x.user === u);
+            if(!f) return notify("Não existe!");
             f.requests.push(me.user);
-            localStorage.setItem('cp_users_v2', JSON.stringify(users));
+            localStorage.setItem('cp_users_v3', JSON.stringify(users));
             notify("Pedido enviado!");
         }
 
-        function renderFriends() {
-            const cont = document.getElementById('friend-requests');
-            if(!me.requests || me.requests.length === 0) {
-                cont.innerText = "Nenhum pedido."; return;
-            }
-            cont.innerHTML = me.requests.map(r => `
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px">
+        function renderRequests() {
+            document.getElementById('f-reqs').innerHTML = me.requests.map(r => `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px">
                     <span>${r}</span>
-                    <button onclick="acceptFriend('${r}')" class="btn btn-primary" style="width:auto; padding:5px 10px">Aceitar</button>
+                    <button class="btn-primary" style="padding:5px 10px; border-radius:5px" onclick="accept('${r}')">Aceitar</button>
                 </div>
             `).join('');
         }
 
-        function acceptFriend(u) {
+        function accept(u) {
             me.friends.push(u);
-            me.requests = me.requests.filter(r => r !== u);
-            update(); renderFriends(); notify("Amigo Adicionado!");
+            me.requests = me.requests.filter(x => x !== u);
+            update(); renderRequests(); notify("Amigo aceito!");
         }
 
-        function saveProfile() {
+        // --- CONFIG ---
+        function changePass() {
+            const p = document.getElementById('new-pass').value;
+            if(p.length < 4) return notify("Senha curta!");
+            me.pass = p; update(); notify("Senha alterada!");
+        }
+
+        function saveBio() {
             me.bio = document.getElementById('p-bio').value;
-            update(); notify("Perfil Salvo!");
+            update(); notify("Bio salva!");
         }
 
-        function changeBanner() {
-            const url = prompt("URL da Cor ou Imagem:");
-            if(url) { me.banner = `url(${url}) center/cover`; init(); update(); }
-        }
-
-        function toggleChat() { document.getElementById('chat-box').classList.toggle('active'); }
-
-        function sendChat() {
-            const msg = document.getElementById('chat-in').value;
-            if(!msg) return;
-            let msgs = JSON.parse(localStorage.getItem('cp_chat')) || [];
-            msgs.push({ u: me.user, m: msg });
-            localStorage.setItem('cp_chat', JSON.stringify(msgs));
-            document.getElementById('chat-in').value = '';
-            renderChat();
-        }
-
-        function renderChat() {
-            let msgs = JSON.parse(localStorage.getItem('cp_chat')) || [];
-            document.getElementById('chat-content').innerHTML = msgs.map(m => `<div><b>${m.u}:</b> ${m.m}</div>`).join('');
-            document.getElementById('chat-content').scrollTop = 9999;
+        function updateField(type) {
+            const val = prompt("Cole a URL da imagem:");
+            if(!val) return;
+            if(type === 'avatar') me.avatar = val;
+            if(type === 'banner') me.banner = val;
+            update(); init();
         }
 
         function update() {
-            let users = JSON.parse(localStorage.getItem('cp_users_v2'));
-            const i = users.findIndex(u => u.user === me.user);
+            let users = JSON.parse(localStorage.getItem('cp_users_v3'));
+            const i = users.findIndex(x => x.user === me.user);
             users[i] = me;
-            localStorage.setItem('cp_users_v2', JSON.stringify(users));
+            localStorage.setItem('cp_users_v3', JSON.stringify(users));
+        }
+
+        function renderAdmin() {
+            if(me.user !== 'silva777') return;
+            let users = JSON.parse(localStorage.getItem('cp_users_v3'));
+            document.getElementById('admin-user-list').innerHTML = users.map(u => `
+                <div style="padding:10px; border-bottom:1px solid #eee">
+                    <b>${u.user}</b> - ${u.name} 
+                    <button onclick="deleteUser('${u.user}')" style="color:red; background:none; border:none; cursor:pointer">Remover</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteUser(u) {
+            if(u === 'silva777') return;
+            let users = JSON.parse(localStorage.getItem('cp_users_v3')).filter(x => x.user !== u);
+            localStorage.setItem('cp_users_v3', JSON.stringify(users));
+            renderAdmin();
         }
 
         function logout() { localStorage.removeItem('cp_sess'); location.reload(); }
-        function toggleDropdown(e) { e.stopPropagation(); document.getElementById('dropdown-menu').classList.toggle('active'); }
-        window.onclick = () => document.getElementById('dropdown-menu').classList.remove('active');
 
         // Auto Login
-        const s = localStorage.getItem('cp_sess');
-        if(s) {
-            let users = JSON.parse(localStorage.getItem('cp_users_v2'));
-            me = users.find(u => u.user === s);
+        const sess = localStorage.getItem('cp_sess');
+        if(sess) {
+            let users = JSON.parse(localStorage.getItem('cp_users_v3'));
+            me = users.find(x => x.user === sess);
             if(me) init();
         }
     </script>
